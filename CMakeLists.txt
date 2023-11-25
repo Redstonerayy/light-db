@@ -7,21 +7,19 @@ set(C_FLAGS "-O2 -Wall -std=c17")
 set(CXX_FLAGS "-O2 -Wall -std=c++20")
 
 # ------------ dependencies ------------ #
+find_library(SSL_LIB libssl.a PATHS ./thirdparty/openssl-3.1.4 REQUIRED NO_DEFAULT_PATH)
+find_library(CRYPTO_LIB libcrypto.a PATHS ./thirdparty/openssl-3.1.4 REQUIRED NO_DEFAULT_PATH)
 
-# ------------ main executable ------------ #
+# ------------ main executables ------------ #
+set(INCLUDE_DIRS src/include thirdparty/openssl-3.1.4/include)
+set(LIBS ${SSL_LIB} ${CRYPTO_LIB})
+
 FILE(GLOB SERVER_SOURCE_FILES src/server/*.cpp)
-FILE(GLOB CLIENT_SOURCE_FILES src/client/*.cpp)
-
 add_executable(lightdb ${SERVER_SOURCE_FILES})
-target_include_directories(lightdb PRIVATE
-	src/include
-)
-target_link_libraries(lightdb PRIVATE
-    ssl
-    crypto
-)
+target_include_directories(lightdb PRIVATE ${INCLUDE_DIRS})
+target_link_libraries(lightdb ${LIBS})
 
+FILE(GLOB CLIENT_SOURCE_FILES src/client/*.cpp)
 add_executable(ldc ${CLIENT_SOURCE_FILES})
-target_include_directories(ldc PRIVATE
-	src/include
-)
+target_include_directories(ldc PRIVATE ${INCLUDE_DIRS})
+target_link_libraries(ldc ${LIBS})

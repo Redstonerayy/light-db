@@ -1,9 +1,10 @@
 # build
 /build
 /run
+/_run
 
 # dependencies
-/openssl*
+/thirdparty
 
 # editors
 /.vscode

@@ -1,5 +1,9 @@
 .PHONY: build
 
+deps:
+	mkdir -p ./build
+	./scripts/openssl.sh
+
 build:
 	C=clang CXX=clang++ cmake -B ./build -G Ninja -S .
 	ninja -C ./build
@@ -10,7 +14,7 @@ start: build
 	cp ./res/cert.pem ./run/tls/cert.pem
 	cp ./res/key.pem ./run/tls/key.pem
 	cp ./build/lightdb ./run/lightdb
-	./start.sh
+	./scripts/start.sh
 
 client: build
 	./build/ldc
