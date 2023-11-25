@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <string>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -11,6 +12,8 @@
 #include <netinet/in.h>
 #include <cerrno>
 #include <unistd.h>
+
+const std::string PORT = "4466";
 
 int main(int argc, char *argv[])
 {
@@ -21,7 +24,7 @@ int main(int argc, char *argv[])
     hints.ai_socktype = SOCK_STREAM;
 
     int status;
-    if ((status = getaddrinfo("127.0.0.1", "3003", &hints, &res)) != 0)
+    if ((status = getaddrinfo("127.0.0.1", PORT.c_str(), &hints, &res)) != 0)
     {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
         return 2;
@@ -32,11 +35,11 @@ int main(int argc, char *argv[])
     int c = connect(s, res->ai_addr, res->ai_addrlen);
     if(c < 0) printf("Error %s\n", strerror(errno));
 
-    const char *msg = "test";
+    const char *msg = "testaasdfasdfasdfasdfasdfsdf";
     int len = strlen(msg);
     int bytes_send = send(s, msg, len, 0);
     if(bytes_send < 0) printf("Error %s\n", strerror(errno));
-    if(bytes_send > 0) printf("Left %d", bytes_send);
+    if(bytes_send > 0) printf("Bytes Send %d", bytes_send);
 
     close(s);
 
