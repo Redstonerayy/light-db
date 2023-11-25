@@ -1,0 +1,3 @@
+[submodule "thirdparty/alpaca"]
+	path = thirdparty/alpaca
+	url = https://github.com/p-ranav/alpaca.git
