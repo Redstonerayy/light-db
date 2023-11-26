@@ -10,7 +10,7 @@
 
 int main(int argc, char *argv[])
 {
-    struct addrinfo *clientinfo = getLocalhostAddress();
+    struct addrinfo *clientinfo = getRemoteAddress("127.0.0.1");
     int sockfd = makeConnectingSocket(clientinfo);
 
     sendData(sockfd);

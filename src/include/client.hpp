@@ -7,7 +7,7 @@
 
 const std::string PORT = "4466";
 
-struct addrinfo *getLocalhostAddress();
+struct addrinfo *getRemoteAddress(std::string ip);
 int makeConnectingSocket(struct addrinfo *clientinfo);
 void sendData(int sockfd);
 

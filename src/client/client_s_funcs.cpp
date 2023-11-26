@@ -11,7 +11,7 @@
 #include "shared.hpp"
 
 /*------------ get addressinfo for localhost to start connect on port ------------*/
-struct addrinfo *getLocalhostAddress()
+struct addrinfo *getRemoteAddress(std::string ip)
 {
     struct addrinfo hints;
     memset(&hints, 0, sizeof hints);
@@ -20,7 +20,7 @@ struct addrinfo *getLocalhostAddress()
 
     int status;
     struct addrinfo *serverinfo;
-    if ((status = getaddrinfo("127.0.0.1", PORT.c_str(), &hints, &serverinfo)) != 0)
+    if ((status = getaddrinfo(ip.c_str(), PORT.c_str(), &hints, &serverinfo)) != 0)
     {
         printf("Error calling getaddrinfo(): %s\n", gai_strerror(status));
         return NULL;
