@@ -15,7 +15,7 @@ struct addrinfo *getRemoteAddress(std::string ip)
 {
     struct addrinfo hints;
     memset(&hints, 0, sizeof hints);
-    hints.ai_family = AF_UNSPEC; // AF_INET or AF_INET6 to force version
+    hints.ai_family = AF_UNSPEC; // AF_UNSPEC, AF_INET or AF_INET6
     hints.ai_socktype = SOCK_STREAM;
 
     int status;

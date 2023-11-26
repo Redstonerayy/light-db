@@ -1,0 +1,9 @@
+Ressources:
+https://beej.us/guide/bgnet/html/
+https://libevent.org/
+https://wiki.openssl.org/index.php/Simple_TLS_Server
+
+Sources:
+https://www.youtube.com/watch?v=Z_cX3bzkExE https://github.com/maxmcd/how-sqlite-works/
+https://suif.stanford.edu/dragonbook/ https://en.wikipedia.org/wiki/Dragon_Book
+http://infolab.stanford.edu/~ullman/dscb.html http://infolab.stanford.edu/~ullman/fcdb.html
