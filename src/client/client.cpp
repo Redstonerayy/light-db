@@ -35,11 +35,11 @@ int main(int argc, char *argv[])
     int c = connect(s, res->ai_addr, res->ai_addrlen);
     if(c < 0) printf("Error %s\n", strerror(errno));
 
-    const char *msg = "testaasdfasdfasdfasdfasdfsdf";
+    const char *msg = "1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-16-17-18-19-20-21-22-23-24-25-26-27-28-29-30";
     int len = strlen(msg);
     int bytes_send = send(s, msg, len, 0);
     if(bytes_send < 0) printf("Error %s\n", strerror(errno));
-    if(bytes_send > 0) printf("Bytes Send %d", bytes_send);
+    if(bytes_send > 0) printf("Bytes Send %d\n", bytes_send);
 
     close(s);
 
