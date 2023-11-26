@@ -11,6 +11,7 @@ build:
 start: build
 	mkdir -p ./run
 	mkdir -p ./run/tls
+	cp ./build/ldc ./run/ldc
 	cp ./res/cert.pem ./run/tls/cert.pem
 	cp ./res/key.pem ./run/tls/key.pem
 	cp ./build/lightdb ./run/lightdb
