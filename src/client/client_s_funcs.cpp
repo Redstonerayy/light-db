@@ -6,6 +6,7 @@
 #include <cerrno>
 #include <unistd.h>
 #include <poll.h>
+#include <vector>
 
 #include "client.hpp"
 #include "shared.hpp"
@@ -63,7 +64,29 @@ int makeConnectingSocket(struct addrinfo *clientinfo)
     return sockfd;
 }
 
-void sendData(int sockfd)
+int sendAll(int s, const char *buf, int *len)
+{
+    int total = 0;
+    int bytesleft = *len;
+    int n;
+
+    while (total < *len)
+    {
+        n = send(s, buf + total, bytesleft, 0);
+        if (n == -1)
+        {
+            break;
+        }
+        total += n;
+        bytesleft -= n;
+    }
+
+    *len = total;
+
+    return (n == -1) ? -1 : 0;
+}
+
+void sendData(int sockfd, std::string querystring)
 {
     struct pollfd pfds[1];
     pfds[0].fd = sockfd;
@@ -73,13 +96,53 @@ void sendData(int sockfd)
     int is_pollout_event = pfds[0].revents & POLLOUT;
     if (is_pollout_event)
     {
-        const char *msg = "1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-16-17-18-19-20-21-22-23-24-25-26-27-28-29-30";
-        int len = strlen(msg);
-        int bytes_send = send(sockfd, msg, len, 0);
-        if (bytes_send < 0)
-            printf("Error %s\n", strerror(errno));
+        const char *msg = querystring.c_str();
+        int len = querystring.size();
+        int bytes_send = sendAll(sockfd, msg, &len);
+        if (bytes_send == -1)
+            printf("Error calling sendAll()");
         if (bytes_send > 0)
-            printf("Bytes Send %d\n", bytes_send);
+            printf("%d Bytes Send\n", bytes_send);
+    }
+
+    close(sockfd);
+}
+
+void receiveData(int sockfd)
+{
+    struct pollfd pfds[1];
+    pfds[0].fd = sockfd;
+    pfds[0].events = POLLIN;
+
+    int poll_events = poll(pfds, 1, -1); // wait until message received
+    int is_pollin_event = pfds[0].revents & POLLIN;
+    if (is_pollin_event)
+    {
+        int buffersize = 8; // bytes
+        std::vector<char> data;
+        while (true)
+        {
+            std::vector<char> buf(buffersize);
+            int bytes_received = recv(sockfd, buf.data(), buffersize, 0);
+            // char buf[513] = {0};
+            // int bytes_received = recv(sockfd, buf, 512, 0);
+            if (bytes_received == -1)
+            {
+                printf("Error calling recv(): %s\n", strerror(errno));
+                break;
+            }
+            if (bytes_received == 0)
+            {
+                printf("Connection closed by client");
+                break;
+            }
+            if (bytes_received > 0)
+            {
+                printf("Bytes in Buffer %d\n", bytes_received);
+                data.insert(data.end(), buf.begin(), buf.begin() + bytes_received);
+            }
+        }
+        printf("Res %d: %s\n", sockfd, data.data());
     }
 
     close(sockfd);

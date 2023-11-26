@@ -88,21 +88,31 @@ int makeListeningSocket(struct addrinfo *serverinfo)
 
 void processConnection(int sockfd)
 {
+    int buffersize = 8; // bytes
+    std::vector<char> data;
     while (true)
     {
-        char buf[21] = {0};
-        int bytes_received = recv(sockfd, buf, 20, 0);
-        if (bytes_received < 0)
-            printf("Error %s\n", strerror(errno));
-        if (bytes_received > 0)
-            printf("Bytes in Buffer %d\n", bytes_received);
-        if (bytes_received == 0)
-            printf("con closed");
-        if (bytes_received == 0)
+        std::vector<char> buf(buffersize);
+        int bytes_received = recv(sockfd, buf.data(), buffersize, 0);
+        // char buf[513] = {0};
+        // int bytes_received = recv(sockfd, buf, 512, 0);
+        if (bytes_received == -1)
+        {
+            printf("Error calling recv(): %s\n", strerror(errno));
             break;
-
-        printf("Res %d: %s\n", sockfd, buf);
+        }
+        if (bytes_received == 0)
+        {
+            printf("Connection closed by client\n");
+            break;
+        }
+        if (bytes_received > 0)
+        {
+            printf("Bytes in Buffer %d\n", bytes_received);
+            data.insert(data.end(), buf.begin(), buf.begin() + bytes_received);
+        }
     }
+    printf("Client Message: %s\n", data.data());
     close(sockfd);
 }
 

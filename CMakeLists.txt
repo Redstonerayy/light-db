@@ -19,7 +19,7 @@ add_executable(lightdb ${SERVER_SOURCE_FILES})
 target_include_directories(lightdb PRIVATE ${INCLUDE_DIRS})
 target_link_libraries(lightdb ${LIBS})
 
-FILE(GLOB CLIENT_SOURCE_FILES src/client/*.cpp src/shared/*.cpp)
+FILE(GLOB CLIENT_SOURCE_FILES src/client/*.cpp src/shared/*.cpp src/database/*.cpp)
 add_executable(ldc ${CLIENT_SOURCE_FILES})
 target_include_directories(ldc PRIVATE ${INCLUDE_DIRS})
 target_link_libraries(ldc ${LIBS})

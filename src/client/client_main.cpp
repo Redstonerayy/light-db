@@ -6,14 +6,18 @@
 #include <cerrno>
 #include <unistd.h>
 
-#include "client.hpp"
+#include "database-client.hpp"
 
 int main(int argc, char *argv[])
 {
-    struct addrinfo *clientinfo = getRemoteAddress("127.0.0.1");
-    int sockfd = makeConnectingSocket(clientinfo);
+    /*------------ authenticate ------------*/
+    //skip for now, TODO openssl, secret
 
-    sendData(sockfd);
+    /*------------ query ------------*/
+    DatabaseClient client("127.0.0.1");
+    client.Query("hallo server");
+
+    /*------------ visualize data ------------*/
 
     return 0;
 }
