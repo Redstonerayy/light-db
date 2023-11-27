@@ -1,0 +1,5 @@
+Mit der fortschreitenden Digitalisierung wird die strukturierte Aufbewahrung großer Datenmengen immer wichtiger.
+Dabei ist es wichtig, dass diese Daten immer verfügbar sind und einfach und schnell verarbeitet werden können.
+Moderne Datenbanksysteme erfüllen diese Aufgabe, doch muss ein System auch zu den gespeicherten Daten passen.
+In meinem Projekt beschäftige ich mich deshalb mit der Struktur von Datenbanksystemen um herauszufinden,
+wie Entscheidungen in Bezug auf die Art des Datenbanksystems diese Anforderungen beeinflussen.
