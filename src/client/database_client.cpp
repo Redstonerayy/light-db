@@ -2,7 +2,7 @@
 #include <unistd.h>
 
 #include "client.hpp"
-#include "database-client.hpp"
+#include "database_client.hpp"
 
 DatabaseClient::DatabaseClient(std::string ip)
 {

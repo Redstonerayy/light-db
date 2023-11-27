@@ -6,7 +6,7 @@
 #include <cerrno>
 #include <unistd.h>
 
-#include "database-client.hpp"
+#include "database_client.hpp"
 
 int main(int argc, char *argv[])
 {

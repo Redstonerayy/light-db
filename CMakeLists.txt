@@ -14,7 +14,7 @@ find_library(CRYPTO_LIB libcrypto.a PATHS ./thirdparty/openssl-3.1.4 REQUIRED NO
 set(INCLUDE_DIRS src/include thirdparty/openssl-3.1.4/include thirdparty/alpaca/include)
 set(LIBS ${SSL_LIB} ${CRYPTO_LIB})
 
-FILE(GLOB SERVER_SOURCE_FILES src/server/*.cpp src/shared/*.cpp)
+FILE(GLOB SERVER_SOURCE_FILES src/server/*.cpp src/shared/*.cpp src/database/*.cpp)
 add_executable(lightdb ${SERVER_SOURCE_FILES})
 target_include_directories(lightdb PRIVATE ${INCLUDE_DIRS})
 target_link_libraries(lightdb ${LIBS})

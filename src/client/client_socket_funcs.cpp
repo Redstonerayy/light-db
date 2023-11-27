@@ -124,8 +124,6 @@ void receiveData(int sockfd)
         {
             std::vector<char> buf(buffersize);
             int bytes_received = recv(sockfd, buf.data(), buffersize, 0);
-            // char buf[513] = {0};
-            // int bytes_received = recv(sockfd, buf, 512, 0);
             if (bytes_received == -1)
             {
                 printf("Error calling recv(): %s\n", strerror(errno));
@@ -144,6 +142,4 @@ void receiveData(int sockfd)
         }
         printf("Res %d: %s\n", sockfd, data.data());
     }
-
-    close(sockfd);
 }
