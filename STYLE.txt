@@ -1,0 +1,4 @@
+Names:
+    function: foo_bar
+    class: FooBar
+    variable: foo_bar

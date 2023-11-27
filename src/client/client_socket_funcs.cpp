@@ -88,13 +88,8 @@ int sendAll(int s, const char *buf, int *len)
 
 void sendData(int sockfd, std::string querystring)
 {
-    struct pollfd pfds[1];
-    pfds[0].fd = sockfd;
-    pfds[0].events = POLLOUT;
-
-    int poll_events = poll(pfds, 1, -1); // wait until sending possible
-    int is_pollout_event = pfds[0].revents & POLLOUT;
-    if (is_pollout_event)
+    bool pollout_event = wait_for_pollevent(sockfd, POLLOUT, -1);
+    if (pollout_event)
     {
         const char *msg = querystring.c_str();
         int len = querystring.size();

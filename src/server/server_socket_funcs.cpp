@@ -107,9 +107,13 @@ void processConnection(int sockfd)
         if (bytes_received > 0)
         {
             printf("Bytes in Buffer %d\n", bytes_received);
+            printf("VSize %d\n", buf.size());
             data.insert(data.end(), buf.begin(), buf.begin() + bytes_received);
         }
     }
+    printf("VSize %d\n", data.size());
+    data.resize(data.size() + 1);
+    data.at(data.size() - 1) = 0;
     printf("Client Message: %s\n", data.data());
     close(sockfd);
 }
