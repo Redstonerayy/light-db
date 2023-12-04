@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
     /*------------ query ------------*/
     DatabaseClient client("127.0.0.1");
-    client.Query("hallo server");
+    client.Query("SELECT * FROM users; SELECT name FROM cars;");
 
     /*------------ visualize data ------------*/
 
