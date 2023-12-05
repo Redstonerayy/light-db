@@ -16,7 +16,7 @@
 #include "shared.hpp"
 
 /*------------ get addressinfo for binding to local port ------------*/
-struct addrinfo *getLocalAddress()
+struct addrinfo *get_local_address()
 {
     struct addrinfo hints;
     memset(&hints, 0, sizeof hints);
@@ -35,7 +35,7 @@ struct addrinfo *getLocalAddress()
 }
 
 /*------------ avoids "address already in use" error ------------*/
-int bindSocketWithReuse(int sockfd, struct addrinfo *info)
+int bind_socket_with_reuse(int sockfd, struct addrinfo *info)
 {
     int yes = 1;
     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof yes) == -1)
@@ -53,7 +53,7 @@ int bindSocketWithReuse(int sockfd, struct addrinfo *info)
     return 0;
 }
 
-void listenOnSocket(int sockfd, int backlog)
+void listen_on_socket(int sockfd, int backlog)
 {
     if (listen(sockfd, backlog) == -1)
     {
@@ -63,14 +63,14 @@ void listenOnSocket(int sockfd, int backlog)
 }
 
 /*------------ loop over serverinfo and create socket with matching entry ------------*/
-int makeListeningSocket(struct addrinfo *serverinfo)
+int make_listening_socket(struct addrinfo *serverinfo)
 {
     int sockfd;
     struct addrinfo *info = serverinfo;
     for (; info != NULL; info = info->ai_next)
     {
         sockfd = createNonblockingSocket(info);
-        if (bindSocketWithReuse(sockfd, info) == 0)
+        if (bind_socket_with_reuse(sockfd, info) == 0)
             break;
     }
     freeaddrinfo(serverinfo);
@@ -81,12 +81,12 @@ int makeListeningSocket(struct addrinfo *serverinfo)
         exit(1);
     }
 
-    listenOnSocket(sockfd, BACKLOG);
+    listen_on_socket(sockfd, BACKLOG);
 
     return sockfd;
 }
 
-void processConnection(int sockfd)
+void process_connection(int sockfd)
 {
     int buffersize = 512 * 32; // bytes
     std::vector<char> data;
@@ -119,7 +119,7 @@ void processConnection(int sockfd)
 }
 
 /*------------ use poll and start new threads for each connection ------------*/
-void acceptConnections(int sockfd)
+void accept_connections(int sockfd)
 {
     printf("Accepting Connections\n");
 
@@ -139,7 +139,7 @@ void acceptConnections(int sockfd)
             int new_sockfd = accept(sockfd, (struct sockaddr *)&client_addr, &addr_size);
             if (new_sockfd == -1)
                 printf("Error calling accept(): %s\n", strerror(errno));
-            std::thread new_con(processConnection, new_sockfd);
+            std::thread new_con(process_connection, new_sockfd);
             new_con.detach();
         }
     }
