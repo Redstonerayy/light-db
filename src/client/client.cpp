@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <string>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -12,7 +13,7 @@
 #include "shared.hpp"
 
 /*------------ get addressinfo for localhost to start connect on port ------------*/
-struct addrinfo *getRemoteAddress(std::string ip)
+struct addrinfo *get_remote_address(std::string ip, std::string port)
 {
     struct addrinfo hints;
     memset(&hints, 0, sizeof hints);
@@ -21,7 +22,7 @@ struct addrinfo *getRemoteAddress(std::string ip)
 
     int status;
     struct addrinfo *serverinfo;
-    if ((status = getaddrinfo(ip.c_str(), PORT.c_str(), &hints, &serverinfo)) != 0)
+    if ((status = getaddrinfo(ip.c_str(), port.c_str(), &hints, &serverinfo)) != 0)
     {
         printf("Error calling getaddrinfo(): %s\n", gai_strerror(status));
         return NULL;
@@ -29,7 +30,7 @@ struct addrinfo *getRemoteAddress(std::string ip)
     return serverinfo;
 }
 
-void connectOnSocket(int sockfd, struct addrinfo *clientinfo)
+void connect_on_socket(int sockfd, struct addrinfo *clientinfo)
 {
     if (connect(sockfd, clientinfo->ai_addr, clientinfo->ai_addrlen) == -1)
         // if the error ist EINPROGRESS everything is fine
@@ -42,7 +43,7 @@ void connectOnSocket(int sockfd, struct addrinfo *clientinfo)
         }
 }
 
-int makeConnectingSocket(struct addrinfo *clientinfo)
+int make_connecting_socket(struct addrinfo *clientinfo)
 {
     int sockfd;
     struct addrinfo *info = clientinfo;
@@ -59,7 +60,7 @@ int makeConnectingSocket(struct addrinfo *clientinfo)
         exit(1);
     }
 
-    connectOnSocket(sockfd, clientinfo);
+    connect_on_socket(sockfd, clientinfo);
 
     return sockfd;
 }
@@ -86,7 +87,7 @@ int sendAll(int s, const char *buf, int *len)
     return (n == -1) ? -1 : 0;
 }
 
-void sendData(int sockfd, std::string querystring)
+void send_data(int sockfd, std::string querystring)
 {
     bool pollout_event = wait_for_pollevent(sockfd, POLLOUT, -1);
     if (pollout_event)
@@ -103,15 +104,10 @@ void sendData(int sockfd, std::string querystring)
     close(sockfd);
 }
 
-void receiveData(int sockfd)
+void receive_data(int sockfd)
 {
-    struct pollfd pfds[1];
-    pfds[0].fd = sockfd;
-    pfds[0].events = POLLIN;
-
-    int poll_events = poll(pfds, 1, -1); // wait until message received
-    int is_pollin_event = pfds[0].revents & POLLIN;
-    if (is_pollin_event)
+    bool pollin_event = wait_for_pollevent(sockfd, POLLIN, 5);
+    if (pollin_event)
     {
         int buffersize = 8; // bytes
         std::vector<char> data;

@@ -11,19 +11,30 @@
 #include "worker.hpp"
 
 #include "server_class.hpp"
+#include "util.hpp"
 
-void worker_func(Server& server)
+template <class T>
+T queue_front_pop(std::queue<T>& q)
 {
-    while(true){
+    T temp = q.front();
+    q.pop();
+    return temp;
+}
+
+void worker_func(Server &server)
+{
+    while (true)
+    {
         std::unique_lock lock(server.incoming_connections_m);
         int sockfd;
-        if(!server.incoming_connections.empty()){
-            server.incoming_connections.front();
-            server.incoming_connections.pop();
-        } else {
+        if (!server.incoming_connections.empty())
+        {
+            sockfd = queue_front_pop(server.incoming_connections);
+        }
+        else
+        {
             server.incoming_connections_cv.wait(lock);
-            sockfd = server.incoming_connections.front();
-            server.incoming_connections.pop();
+            sockfd = queue_front_pop(server.incoming_connections);
         }
         lock.unlock();
 
@@ -45,15 +56,15 @@ void worker_func(Server& server)
             }
             if (bytes_received > 0)
             {
-                printf("Bytes in Buffer %d\n", bytes_received);
-                printf("VSize %d\n", buf.size());
+                // printf("Bytes in Buffer %d\n", bytes_received);
+                // printf("VSize %d\n", buf.size());
                 data.insert(data.end(), buf.begin(), buf.begin() + bytes_received);
             }
         }
-        printf("VSize %d\n", data.size());
+        // printf("VSize %d\n", data.size());
         data.resize(data.size() + 1);
         data.at(data.size() - 1) = 0;
-        printf("Client Message: %s\n", data.data());
+        printf("Client Message %d: %s\n", server.incoming_connections.size(), data.data());
         close(sockfd);
     }
 }

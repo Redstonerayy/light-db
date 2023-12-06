@@ -1,5 +1,6 @@
 #include <thread>
 #include <functional>
+#include <string>
 
 #include "server_class.hpp"
 
@@ -8,7 +9,9 @@
 #include "listener.hpp"
 
 
-Server::Server(){}
+Server::Server(std::string server_name){
+    this->server_name = server_name;
+}
 
 int Server::start_server()
 {

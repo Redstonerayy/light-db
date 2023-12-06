@@ -13,7 +13,7 @@ find_library(CRYPTO_LIB libcrypto.a PATHS ./thirdparty/openssl-3.1.4 REQUIRED NO
 find_program(iwyu_path NAMES include-what-you-use iwyu REQUIRED)
 
 # ------------ main executables ------------ #
-set(INCLUDE_DIRS src/include src/server src/client thirdparty/openssl-3.1.4/include thirdparty/alpaca/include)
+set(INCLUDE_DIRS src/shared src/server src/client thirdparty/openssl-3.1.4/include thirdparty/alpaca/include)
 set(LIBS ${SSL_LIB} ${CRYPTO_LIB})
 
 # ------------ server ------------ #

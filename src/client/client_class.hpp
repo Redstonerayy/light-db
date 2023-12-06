@@ -5,10 +5,10 @@
 
 #include <string>
 
-class DatabaseClient {
+class Client {
 public:
-    DatabaseClient(std::string ip);
-    ~DatabaseClient();
+    Client(std::string ip, std::string port);
+    ~Client();
     void Query(std::string querystring);
     void Result();
 private:

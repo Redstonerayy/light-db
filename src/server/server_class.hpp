@@ -7,6 +7,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <queue>
+#include <string>
 
 class Server
 {
@@ -15,7 +16,9 @@ public:
     std::mutex incoming_connections_m;
     std::condition_variable incoming_connections_cv;
 
-    Server();
+    std::string server_name;
+
+    Server(std::string server_name);
     int start_server();
 
 private:
