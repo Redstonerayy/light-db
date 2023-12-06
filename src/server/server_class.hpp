@@ -5,22 +5,25 @@
 #include <thread>
 #include <vector>
 #include <mutex>
+#include <condition_variable>
 #include <queue>
 
 class Server
 {
 public:
+    std::queue<int> incoming_connections;
+    std::mutex incoming_connections_m;
+    std::condition_variable incoming_connections_cv;
+
+    Server();
     int start_server();
 
 private:
-    std::queue<int> incoming_connections_fds;
-    std::mutex incoming_connections_fds_mutex;
-
     std::vector<std::thread> workers;
-    bool create_workers(int worker_count);
+    void create_workers(int worker_count);
 
     std::thread listener_thread;
-    bool create_listener();
+    void create_listener();
 };
 
 #endif

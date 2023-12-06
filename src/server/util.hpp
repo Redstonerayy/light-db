@@ -2,12 +2,10 @@
 #ifndef UTIL_HPP
 #define UTIL_HPP
 
-#include <thread>
-
 namespace util
 {
 
-inline unsigned int get_logical_cpus();
+unsigned int get_logical_cpus();
 
 }
 

@@ -1,11 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include <string>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <cerrno>
-#include <unistd.h>
-
+#include <memory>
 #include "database_client.hpp"
 
 int main(int argc, char *argv[])
