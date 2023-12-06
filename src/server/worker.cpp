@@ -14,30 +14,30 @@
 #include "util.hpp"
 
 template <class T>
-T queue_front_pop(std::queue<T>& q)
+T queue_front_pop(std::queue<T> &q)
 {
     T temp = q.front();
     q.pop();
     return temp;
 }
 
+int get_next_sockfd(Server &server)
+{
+    std::unique_lock lock(server.incoming_connections_m);
+    if (server.incoming_connections.empty())
+    {
+        server.incoming_connections_cv.wait(lock);
+    }
+    int sockfd = queue_front_pop(server.incoming_connections);
+    lock.unlock();
+    return sockfd;
+}
+
 void worker_func(Server &server)
 {
     while (true)
     {
-        std::unique_lock lock(server.incoming_connections_m);
-        int sockfd;
-        if (!server.incoming_connections.empty())
-        {
-            sockfd = queue_front_pop(server.incoming_connections);
-        }
-        else
-        {
-            server.incoming_connections_cv.wait(lock);
-            sockfd = queue_front_pop(server.incoming_connections);
-        }
-        lock.unlock();
-
+        int sockfd = get_next_sockfd(server);
         int buffersize = 512 * 32; // bytes
         std::vector<char> data;
         while (true)

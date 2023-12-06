@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[])
 {
-    /*------------ TODO cli arguments ------------*/
+    // TODO cli arguments
     Server server(NAME);
     server.start_server();
 

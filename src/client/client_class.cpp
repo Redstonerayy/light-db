@@ -1,8 +1,9 @@
 #include <string>
 #include <unistd.h>
 
-#include "client.hpp"
 #include "client_class.hpp"
+
+#include "socket_client.hpp"
 
 Client::Client(std::string ip, std::string port)
 {

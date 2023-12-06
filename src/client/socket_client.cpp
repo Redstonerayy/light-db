@@ -9,8 +9,9 @@
 #include <poll.h>
 #include <vector>
 
-#include "client.hpp"
-#include "shared.hpp"
+#include "socket_client.hpp"
+
+#include "socket_shared.hpp"
 
 /*------------ get addressinfo for localhost to start connect on port ------------*/
 struct addrinfo *get_remote_address(std::string ip, std::string port)
@@ -49,7 +50,7 @@ int make_connecting_socket(struct addrinfo *clientinfo)
     struct addrinfo *info = clientinfo;
     for (; info != NULL; info = info->ai_next)
     {
-        if ((sockfd = createNonblockingSocket(info)) != -1)
+        if ((sockfd = create_nonblocking_socket(info)) != -1)
             break;
     }
     freeaddrinfo(clientinfo);
@@ -65,7 +66,7 @@ int make_connecting_socket(struct addrinfo *clientinfo)
     return sockfd;
 }
 
-int sendAll(int s, const char *buf, int *len)
+int send_all(int s, const char *buf, int *len)
 {
     int total = 0;
     int bytesleft = *len;
@@ -94,9 +95,9 @@ void send_data(int sockfd, std::string querystring)
     {
         const char *msg = querystring.c_str();
         int len = querystring.size();
-        int bytes_send = sendAll(sockfd, msg, &len);
+        int bytes_send = send_all(sockfd, msg, &len);
         if (bytes_send == -1)
-            printf("Error calling sendAll()");
+            printf("Error calling send_all()");
         if (bytes_send > 0)
             printf("%d Bytes Send\n", bytes_send);
     }

@@ -12,6 +12,8 @@
 #include <thread>
 #include <vector>
 
+#include "socket_shared.hpp"
+
 /*------------ convert sockaddr to address matching ip version ------------*/
 void *get_internet_addr(struct sockaddr *sa)
 {
@@ -22,7 +24,7 @@ void *get_internet_addr(struct sockaddr *sa)
 }
 
 /*------------ use poll() with this socket ------------*/
-int createNonblockingSocket(struct addrinfo *info)
+int create_nonblocking_socket(struct addrinfo *info)
 {
     int sockfd = socket(info->ai_family, info->ai_socktype, info->ai_protocol);
     if (sockfd == -1)
@@ -34,7 +36,6 @@ int createNonblockingSocket(struct addrinfo *info)
     return sockfd;
 }
 
-/*------------ wait for pollin ------------*/
 bool wait_for_pollevent(int sockfd, int event, int timeout)
 {
     struct pollfd pfds[1];
