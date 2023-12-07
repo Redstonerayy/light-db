@@ -32,9 +32,7 @@ int get_sockfd_if_not_max_reached(Server &server, int& connection_count)
     }
     int sockfd = -1;
     if(connection_count < WORKER_EPOLL_MAX){
-        printf("qu empty? %d\n", server.incoming_connections.empty());
         sockfd = queue_front_pop(server.incoming_connections);
-        printf("%d : %zu\n", sockfd, server.incoming_connections.size());
         ++connection_count;
     }
     lock.unlock();
@@ -128,20 +126,19 @@ void worker_func(Server &server)
     int connection_count = 0;
     struct epoll_event events[WORKER_EPOLL_MAX];
     int epollfd = setup_epoll();
-    if (epollfd != -1)
+    if (epollfd == -1)
+        return;
+    
+    while (true)
     {
-        while (true)
-        {
-            int sockfd = get_sockfd_if_not_max_reached(server, connection_count);
-            printf("sockfd %d\n", sockfd);
-            if(sockfd != -1)
-                epoll_add_pollin_event(epollfd, sockfd);
+        int sockfd = get_sockfd_if_not_max_reached(server, connection_count);
+        if(sockfd != -1)
+            epoll_add_pollin_event(epollfd, sockfd);
 
-            int event_count = epoll_wait(epollfd, events, WORKER_EPOLL_MAX, 500);
-            if (event_count > 0)
-            {
-                process_epoll_events(events, event_count, connection_count, epollfd);
-            }
+        int event_count = epoll_wait(epollfd, events, WORKER_EPOLL_MAX, 5);
+        if (event_count > 0)
+        {
+            process_epoll_events(events, event_count, connection_count, epollfd);
         }
     }
 }
