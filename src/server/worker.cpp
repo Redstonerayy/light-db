@@ -22,7 +22,7 @@ T queue_front_pop(std::queue<T> &q)
     return temp;
 }
 
-int get_sockfd_if_not_max_reached(Server &server, int& connection_count)
+int get_sockfd_if_not_max_reached(Server &server, int &connection_count)
 {
     std::unique_lock lock(server.incoming_connections_m);
     if (server.incoming_connections.empty())
@@ -31,7 +31,8 @@ int get_sockfd_if_not_max_reached(Server &server, int& connection_count)
             server.incoming_connections_cv.wait(lock);
     }
     int sockfd = -1;
-    if(connection_count < WORKER_EPOLL_MAX){
+    if (connection_count < WORKER_EPOLL_MAX)
+    {
         sockfd = queue_front_pop(server.incoming_connections);
         ++connection_count;
     }
@@ -52,11 +53,12 @@ int setup_epoll()
     return epollfd;
 }
 
-int epoll_add_pollin_event(int epollfd, int sockfd)
+int epoll_add_pollin_event(int epollfd, int sockfd, void *connection_data)
 {
     struct epoll_event event;
     event.events = EPOLLIN;
     event.data.fd = sockfd;
+    event.data.ptr = connection_data;
 
     if (epoll_ctl(epollfd, EPOLL_CTL_ADD, sockfd, &event) == -1)
     {
@@ -78,14 +80,21 @@ int epoll_remove_event(int epollfd, int sockfd)
     return 0;
 }
 
-void process_epoll_event(int sockfd, int& connection_count, int epollfd)
+void close_connection(int sockfd, int epollfd, int &connection_count)
+{
+    epoll_remove_event(epollfd, sockfd);
+    --connection_count;
+    close(sockfd);
+}
+
+void process_epoll_event(epoll_data_t connection_data, int &connection_count, int epollfd)
 {
     int buffersize = 512 * 32; // bytes
     std::vector<char> data;
     while (true)
     {
         std::vector<char> buf(buffersize);
-        int bytes_received = recv(sockfd, buf.data(), buffersize, 0);
+        int bytes_received = recv(connection_data.fd, buf.data(), buffersize, 0);
         if (bytes_received == -1)
         {
             printf("Error calling recv(): %s\n", strerror(errno));
@@ -107,17 +116,14 @@ void process_epoll_event(int sockfd, int& connection_count, int epollfd)
     data.resize(data.size() + 1);
     data.at(data.size() - 1) = 0;
     printf("Client Message: %s\n", data.data());
-    epoll_remove_event(epollfd, sockfd);
-    --connection_count;
-    close(sockfd);
+    close_connection(connection_data.fd, epollfd, connection_count);
 }
 
-void process_epoll_events(struct epoll_event events[], int event_count, int& connection_count, int epollfd)
+void process_epoll_events(struct epoll_event events[], int event_count, int &connection_count, int epollfd)
 {
-    printf("%d ready events\n", event_count);
     for (int i = 0; i < event_count; ++i)
     {
-        process_epoll_event(events[i].data.fd, connection_count, epollfd);
+        process_epoll_event(events[i].data, connection_count, epollfd);
     }
 }
 
@@ -128,12 +134,15 @@ void worker_func(Server &server)
     int epollfd = setup_epoll();
     if (epollfd == -1)
         return;
-    
+
     while (true)
     {
         int sockfd = get_sockfd_if_not_max_reached(server, connection_count);
-        if(sockfd != -1)
-            epoll_add_pollin_event(epollfd, sockfd);
+        if (sockfd != -1)
+        {
+            void *new_connection = create_new_connection();
+            epoll_add_pollin_event(epollfd, sockfd, new_connection);
+        }
 
         int event_count = epoll_wait(epollfd, events, WORKER_EPOLL_MAX, 5);
         if (event_count > 0)
