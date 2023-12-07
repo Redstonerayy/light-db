@@ -24,7 +24,7 @@ int accept_incoming_connection(int sockfd)
     return new_sockfd;
 }
 
-void add_connection_to_queue_and_notify(int new_sockfd, Server& server)
+void add_connection_to_queue_and_notify(int new_sockfd, Server &server)
 {
     std::unique_lock lock(server.incoming_connections_m);
     server.incoming_connections.emplace(new_sockfd);

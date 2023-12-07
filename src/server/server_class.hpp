@@ -12,6 +12,7 @@
 class Server
 {
 public:
+    int current_connections;
     std::queue<int> incoming_connections;
     std::mutex incoming_connections_m;
     std::condition_variable incoming_connections_cv;
