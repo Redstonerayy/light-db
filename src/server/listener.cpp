@@ -5,6 +5,7 @@
 #include <poll.h>
 #include <mutex>
 #include <queue>
+#include <fcntl.h>
 #include <condition_variable>
 
 #include "listener.hpp"
@@ -42,6 +43,7 @@ void add_incoming_connections_to_queue(int sockfd, Server &server)
         if (pollin_event)
         {
             int new_sockfd = accept_incoming_connection(sockfd);
+            fcntl(new_sockfd, F_SETFL, O_NONBLOCK);
             add_connection_to_queue_and_notify(new_sockfd, server);
         }
     }

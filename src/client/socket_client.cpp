@@ -101,37 +101,4 @@ void send_data(int sockfd, std::string querystring)
         if (bytes_send > 0)
             printf("%d Bytes Send\n", bytes_send);
     }
-
-    close(sockfd);
-}
-
-void receive_data(int sockfd)
-{
-    bool pollin_event = wait_for_pollevent(sockfd, POLLIN, 5);
-    if (pollin_event)
-    {
-        int buffersize = 8; // bytes
-        std::vector<char> data;
-        while (true)
-        {
-            std::vector<char> buf(buffersize);
-            int bytes_received = recv(sockfd, buf.data(), buffersize, 0);
-            if (bytes_received == -1)
-            {
-                printf("Error calling recv(): %s\n", strerror(errno));
-                break;
-            }
-            if (bytes_received == 0)
-            {
-                printf("Connection closed by client");
-                break;
-            }
-            if (bytes_received > 0)
-            {
-                printf("Bytes in Buffer %d\n", bytes_received);
-                data.insert(data.end(), buf.begin(), buf.begin() + bytes_received);
-            }
-        }
-        printf("Res %d: %s\n", sockfd, data.data());
-    }
 }

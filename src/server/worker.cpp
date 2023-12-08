@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <cerrno>
 #include <sys/socket.h>
 #include <vector>
@@ -13,6 +14,12 @@
 
 #include "server_class.hpp"
 #include "server_config.hpp"
+
+struct Connection
+{
+    int sockfd;
+    std::vector<char> buffered_data;
+};
 
 template <class T>
 T queue_front_pop(std::queue<T> &q)
@@ -55,9 +62,10 @@ int setup_epoll()
 
 int epoll_add_pollin_event(int epollfd, int sockfd, void *connection_data)
 {
-    struct epoll_event event;
+    struct epoll_event event
+    {
+    };
     event.events = EPOLLIN;
-    event.data.fd = sockfd;
     event.data.ptr = connection_data;
 
     if (epoll_ctl(epollfd, EPOLL_CTL_ADD, sockfd, &event) == -1)
@@ -71,7 +79,7 @@ int epoll_add_pollin_event(int epollfd, int sockfd, void *connection_data)
 
 int epoll_remove_event(int epollfd, int sockfd)
 {
-    if (epoll_ctl(epollfd, EPOLL_CTL_DEL, sockfd, NULL) == -1)
+    if (epoll_ctl(epollfd, EPOLL_CTL_DEL, sockfd, nullptr) == -1)
     {
         printf("Error calling epoll_ctl() CTL_DEL: %s\n", strerror(errno));
         return -1;
@@ -80,51 +88,60 @@ int epoll_remove_event(int epollfd, int sockfd)
     return 0;
 }
 
-void close_connection(int sockfd, int epollfd, int &connection_count)
+void close_connection(Connection *con, int epollfd, int &connection_count)
 {
-    epoll_remove_event(epollfd, sockfd);
+    epoll_remove_event(epollfd, con->sockfd);
     --connection_count;
-    close(sockfd);
+    close(con->sockfd);
+    free(con);
 }
 
-void process_epoll_event(epoll_data_t connection_data, int &connection_count, int epollfd)
+void receive_all_data(Connection *connection)
 {
-    int buffersize = 512 * 32; // bytes
-    std::vector<char> data;
+    int buffersize = 65536; // 2 ** 16 bytes
     while (true)
     {
         std::vector<char> buf(buffersize);
-        int bytes_received = recv(connection_data.fd, buf.data(), buffersize, 0);
+        int bytes_received = recv(connection->sockfd, buf.data(), buffersize, 0);
         if (bytes_received == -1)
         {
-            printf("Error calling recv(): %s\n", strerror(errno));
+            if(errno != EAGAIN && errno != EWOULDBLOCK)
+                printf("Error calling recv(): %s\n", strerror(errno));
             break;
         }
-        if (bytes_received == 0)
+        else if (bytes_received == 0)
         {
             printf("Connection closed by client\n");
             break;
         }
-        if (bytes_received > 0)
+        else if (bytes_received > 0)
         {
-            // printf("Bytes in Buffer %d\n", bytes_received);
-            // printf("VSize %d\n", buf.size());
-            data.insert(data.end(), buf.begin(), buf.begin() + bytes_received);
+            connection->buffered_data.insert(connection->buffered_data.end(), buf.begin(), buf.begin() + bytes_received);
         }
     }
-    // printf("VSize %d\n", data.size());
-    data.resize(data.size() + 1);
-    data.at(data.size() - 1) = 0;
-    printf("Client Message: %s\n", data.data());
-    close_connection(connection_data.fd, epollfd, connection_count);
+}
+
+void process_epoll_event(void *connection_ptr, int &connection_count, int epollfd)
+{
+    Connection *connection = static_cast<Connection *>(connection_ptr);
+    receive_all_data(connection);
+    printf("%s\n", connection->buffered_data.data());
+    close_connection(connection, epollfd, connection_count);
 }
 
 void process_epoll_events(struct epoll_event events[], int event_count, int &connection_count, int epollfd)
 {
     for (int i = 0; i < event_count; ++i)
     {
-        process_epoll_event(events[i].data, connection_count, epollfd);
+        process_epoll_event(events[i].data.ptr, connection_count, epollfd);
     }
+}
+
+Connection *create_new_connection(int sockfd)
+{
+    Connection *new_con = new Connection;
+    new_con->sockfd = sockfd;
+    return new_con;
 }
 
 void worker_func(Server &server)
@@ -140,7 +157,7 @@ void worker_func(Server &server)
         int sockfd = get_sockfd_if_not_max_reached(server, connection_count);
         if (sockfd != -1)
         {
-            void *new_connection = create_new_connection();
+            Connection *new_connection = create_new_connection(sockfd);
             epoll_add_pollin_event(epollfd, sockfd, new_connection);
         }
 

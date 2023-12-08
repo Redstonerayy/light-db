@@ -1,14 +1,17 @@
 # build
 /build
 /run
-/_run
 
 # dependencies
 /thirdparty
 
 # editors
+# code
 /.vscode
+
+# intellij
 /.idea
+/cmake-build-debug
 
 # keys
 /res/*.pem

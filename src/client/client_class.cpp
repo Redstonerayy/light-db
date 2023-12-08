@@ -23,7 +23,4 @@ void Client::Query(std::string querystring)
     send_data(this->sockfd, querystring);
 }
 
-void Client::Result()
-{
-    receive_data(this->sockfd);
-}
+void Client::Result(){}
