@@ -8,14 +8,15 @@
 #include "worker.hpp"
 #include "listener.hpp"
 
-
-Server::Server(std::string server_name){
+Server::Server(std::string server_name)
+{
     this->server_name = server_name;
 }
 
-int Server::start_server()
+int Server::start_server(Database *db)
 {
     const unsigned int logical_cpus = util::get_logical_cpus();
+    this->db = db;
     this->create_workers(logical_cpus);
     listener_func(std::ref(*this));
 
@@ -25,8 +26,9 @@ int Server::start_server()
 void Server::create_workers(int worker_count)
 {
     this->workers = std::vector<std::thread>(worker_count);
-    for(int i = 0; i < worker_count; ++i){
-        this->workers.emplace_back(std::thread(worker_func, std::ref(*this)));
+    for (int i = 0; i < worker_count; ++i)
+    {
+        this->workers.emplace_back(std::thread(worker_func, std::ref(*this), std::ref(*this->db)));
     }
 }
 

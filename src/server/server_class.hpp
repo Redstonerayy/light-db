@@ -9,18 +9,20 @@
 #include <queue>
 #include <string>
 
+#include "database_class.hpp"
+
 class Server
 {
 public:
-    int current_connections;
     std::queue<int> incoming_connections;
     std::mutex incoming_connections_m;
     std::condition_variable incoming_connections_cv;
 
     std::string server_name;
+    Database* db;
 
     Server(std::string server_name);
-    int start_server();
+    int start_server(Database *db);
 
 private:
     std::vector<std::thread> workers;
