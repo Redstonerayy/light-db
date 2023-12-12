@@ -5,9 +5,9 @@
 int main(int argc, char *argv[])
 {
     // TODO cli arguments
-    Database db = Database();
-    Server server(NAME);
-    server.start_server(&db);
+    Database* db = new Database;
+    Server* server = new Server(NAME);
+    server->start_server(db);
 
     return 0;
 }

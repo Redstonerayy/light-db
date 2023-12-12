@@ -15,8 +15,8 @@ Server::Server(std::string server_name)
 
 int Server::start_server(Database *db)
 {
-    const unsigned int logical_cpus = util::get_logical_cpus();
     this->db = db;
+    const unsigned int logical_cpus = util::get_logical_cpus();
     this->create_workers(logical_cpus);
     listener_func(std::ref(*this));
 

@@ -130,12 +130,13 @@ int receive_all_data(Connection *connection)
 void process_epoll_event(void *connection_ptr, int &connection_count, Database &db)
 {
     Connection *connection = static_cast<Connection *>(connection_ptr);
-    if (receive_all_data(connection) == -1){
+    if (receive_all_data(connection) == -1)
+    {
         close_connection(connection, connection_count);
         free(connection);
         return;
     }
-    db.process_connection(connection);
+    void *res = db.process_connection(connection);
 }
 
 void process_epoll_events(struct epoll_event events[], int event_count, int &connection_count, Database &db)

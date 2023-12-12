@@ -7,7 +7,8 @@
 class Database
 {
 public:
-    void process_connection(Connection *con);
+    void *process_connection(Connection *con);
+
 private:
 };
 
