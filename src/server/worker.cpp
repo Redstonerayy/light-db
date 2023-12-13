@@ -12,6 +12,7 @@
 
 #include "worker.hpp"
 
+#include "socket_server.hpp"
 #include "server_class.hpp"
 #include "server_config.hpp"
 #include "structs.hpp"
@@ -136,7 +137,9 @@ void process_epoll_event(void *connection_ptr, int &connection_count, Database &
         free(connection);
         return;
     }
-    void *res = db.process_connection(connection);
+    std::string result = db.process_connection(connection);
+    printf("%s\n", &result.at(0));
+    send_data(connection->sockfd, result);
 }
 
 void process_epoll_events(struct epoll_event events[], int event_count, int &connection_count, Database &db)

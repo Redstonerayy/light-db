@@ -1,11 +1,17 @@
-#include <iostream>
 #include <string>
+#include <vector>
 
 #include "database_class.hpp"
 
 #include "structs.hpp"
 
-void *Database::process_connection(Connection *con)
+std::string Database::process_connection(Connection *con)
+{
+    std::string query = this->extract_query_from_connection(con);
+    return query;
+}
+
+std::string Database::extract_query_from_connection(Connection *con)
 {
     bool double_quote = false;
     bool single_quote = false;
@@ -21,12 +27,9 @@ void *Database::process_connection(Connection *con)
         if (con->buffered_data.at(i) == ';' && !single_quote && !double_quote)
         {
             query = std::string(con->buffered_data.begin(), con->buffered_data.begin() + i + 1);
-            con->buffered_data = std::vector<char>(con->buffered_data.begin() + i + 1, con->buffered_data.end());
+            con->buffered_data = std::vector<char>(65536);
             break;
         }
     }
-    std::cout << query << "\n";
-    // con->buffered_data.push_back(0);
-    // std::cout << con->buffered_data.data() << "\n";
-    return 0;
+    return query;
 }

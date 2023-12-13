@@ -2,14 +2,17 @@
 #ifndef DATABASE_CLASS_HPP
 #define DATABASE_CLASS_HPP
 
+#include <string>
+
 #include "structs.hpp"
 
 class Database
 {
 public:
-    void *process_connection(Connection *con);
+    std::string process_connection(Connection *con);
 
 private:
+    std::string extract_query_from_connection(Connection *con);
 };
 
 #endif
