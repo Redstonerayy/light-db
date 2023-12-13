@@ -13,6 +13,7 @@ public:
 
 private:
     std::string extract_query_from_connection(Connection *con);
+    std::string execute_query(std::string query_string);
 };
 
 #endif

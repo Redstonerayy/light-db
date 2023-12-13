@@ -8,7 +8,8 @@
 std::string Database::process_connection(Connection *con)
 {
     std::string query = this->extract_query_from_connection(con);
-    return query;
+    std::string query_result = this->execute_query(query);
+    return query_result;
 }
 
 std::string Database::extract_query_from_connection(Connection *con)
@@ -32,4 +33,10 @@ std::string Database::extract_query_from_connection(Connection *con)
         }
     }
     return query;
+}
+
+std::string Database::execute_query(std::string query_string)
+{
+    
+    return query_string;
 }
