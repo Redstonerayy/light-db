@@ -9,11 +9,12 @@
 class Database
 {
 public:
+    std::string db_path;
     std::string process_connection(Connection *con);
-
-private:
     std::string extract_query_from_connection(Connection *con);
     std::string execute_query(std::string query_string);
+
+    Database(std::string dp_path);
 };
 
 #endif

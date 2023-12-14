@@ -9,14 +9,14 @@
 #include <mutex>
 #include <queue>
 #include <sys/epoll.h>
+#include <string>
 
 #include "worker.hpp"
-
-#include "socket_server.hpp"
-#include "server_class.hpp"
-#include "server_config.hpp"
+#include "socket_shared.hpp"
+#include "server_constants.hpp"
+#include "tcp_socket_server.hpp"
 #include "structs.hpp"
-#include "database_class.hpp"
+#include "database.hpp"
 
 template <class T>
 T queue_front_pop(std::queue<T> &q)
@@ -26,7 +26,7 @@ T queue_front_pop(std::queue<T> &q)
     return temp;
 }
 
-int get_sockfd_if_not_max_reached(Server &server, int &connection_count)
+int get_sockfd_if_not_max_reached(TCP_Socket_Server &server, int &connection_count)
 {
     int sockfd = -1;
     if (connection_count < WORKER_EPOLL_MAX)
@@ -37,7 +37,7 @@ int get_sockfd_if_not_max_reached(Server &server, int &connection_count)
     return sockfd;
 }
 
-int get_sockfd_from_queue(Server &server, int &connection_count)
+int get_sockfd_from_queue(TCP_Socket_Server &server, int &connection_count)
 {
     std::unique_lock lock(server.incoming_connections_m);
     int sockfd = -1;
@@ -157,7 +157,7 @@ Connection *create_new_connection(int sockfd)
     return new_con;
 }
 
-void worker_func(Server &server, Database &db)
+void worker_func(TCP_Socket_Server &server, Database &db)
 {
     int connection_count = 0;
     struct epoll_event events[WORKER_EPOLL_MAX];

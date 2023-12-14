@@ -9,9 +9,8 @@
 #include <condition_variable>
 
 #include "listener.hpp"
-
-#include "server_config.hpp"
-#include "server_class.hpp"
+#include "server_constants.hpp"
+#include "tcp_socket_server.hpp"
 #include "socket_server.hpp"
 #include "socket_shared.hpp"
 
@@ -25,7 +24,7 @@ int accept_incoming_connection(int sockfd)
     return new_sockfd;
 }
 
-void add_connection_to_queue_and_notify(int new_sockfd, Server &server)
+void add_connection_to_queue_and_notify(int new_sockfd, TCP_Socket_Server &server)
 {
     std::unique_lock lock(server.incoming_connections_m);
     server.incoming_connections.emplace(new_sockfd);
@@ -33,7 +32,7 @@ void add_connection_to_queue_and_notify(int new_sockfd, Server &server)
     server.incoming_connections_cv.notify_one();
 }
 
-void add_incoming_connections_to_queue(int sockfd, Server &server)
+void add_incoming_connections_to_queue(int sockfd, TCP_Socket_Server &server)
 {
     printf("Accepting Connections\n");
 
@@ -49,7 +48,7 @@ void add_incoming_connections_to_queue(int sockfd, Server &server)
     }
 }
 
-void listener_func(Server &server)
+void listener_func(TCP_Socket_Server &server)
 {
     struct addrinfo *serverinfo = get_local_address(PORT);
     int sockfd = make_listening_socket(serverinfo, BACKLOG);

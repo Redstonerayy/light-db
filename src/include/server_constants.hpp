@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef SERVER_CONFIG_HPP
-#define SERVER_CONFIG_HPP
+#ifndef SERVER_CONSTANTS_HPP
+#define SERVER_CONSTANTS_HPP
 
 #include <string>
 

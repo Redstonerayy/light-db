@@ -1,9 +1,14 @@
 #include <string>
 #include <vector>
 
-#include "database_class.hpp"
+#include "database.hpp"
 
 #include "structs.hpp"
+
+Database::Database(std::string db_path)
+{
+    this->db_path = db_path;
+}
 
 std::string Database::process_connection(Connection *con)
 {
@@ -37,6 +42,5 @@ std::string Database::extract_query_from_connection(Connection *con)
 
 std::string Database::execute_query(std::string query_string)
 {
-    
     return query_string;
 }

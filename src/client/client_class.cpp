@@ -4,8 +4,8 @@
 #include <vector>
 
 #include "client_class.hpp"
-
 #include "socket_client.hpp"
+#include "socket_shared.hpp"
 
 Client::Client(std::string ip, std::string port)
 {

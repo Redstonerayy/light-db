@@ -1,6 +1,6 @@
 #pragma once
-#ifndef SERVER_CLASS_HPP
-#define SERVER_CLASS_HPP
+#ifndef TCP_SOCKET_SERVER_HPP
+#define TCP_SOCKET_SERVER_HPP
 
 #include <thread>
 #include <vector>
@@ -9,27 +9,23 @@
 #include <queue>
 #include <string>
 
-#include "database_class.hpp"
+#include "database.hpp"
 
-class Server
+class TCP_Socket_Server
 {
 public:
+    Database *db;
+
     std::queue<int> incoming_connections;
     std::mutex incoming_connections_m;
     std::condition_variable incoming_connections_cv;
-
-    std::string server_name;
-    Database* db;
-
-    Server(std::string server_name);
-    int start_server(Database *db);
-
-private:
+    
+    std::thread listener_thread;
+    void create_listener();
     std::vector<std::thread> workers;
     void create_workers(int worker_count);
 
-    std::thread listener_thread;
-    void create_listener();
+    TCP_Socket_Server(Database *db, std::string server_port);
 };
 
 #endif

@@ -1,12 +1,12 @@
-#include "database_class.hpp"
-#include "server_config.hpp"
-#include "server_class.hpp"
+#include "database_constants.hpp"
+#include "database.hpp"
+#include "server_constants.hpp"
+#include "server.hpp"
 
 int main(int argc, char *argv[])
 {
-    // TODO cli arguments
-    Database* db = new Database;
-    Server* server = new Server(NAME);
+    Database* db = new Database(DB_PATH);
+    Server* server = new Server(NAME, PORT);
     server->start_server(db);
 
     return 0;
