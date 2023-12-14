@@ -5,14 +5,15 @@
 
 #include <string>
 
+#include "socket.hpp"
+
 class Client {
 public:
     Client(std::string ip, std::string port);
-    ~Client();
     void Query(std::string querystring);
     void Result();
 private:
-    int sockfd;
+    Socket socket;
 };
 
 #endif

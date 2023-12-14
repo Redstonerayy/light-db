@@ -8,13 +8,16 @@
 #include <poll.h>
 #include <fcntl.h>
 #include <vector>
+#include <unistd.h>
 
 #include "socket.hpp"
 #include "socket_funcs.hpp"
 
 Socket::Socket() {}
 
-Socket::~Socket() {}
+Socket::~Socket() {
+    close(this->sockfd);
+}
 
 void Socket::set_to_nonblocking()
 {
