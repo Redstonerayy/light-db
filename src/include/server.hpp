@@ -1,6 +1,6 @@
 #pragma once
-#ifndef SERVER_CLASS_HPP
-#define SERVER_CLASS_HPP
+#ifndef SERVER_HPP
+#define SERVER_HPP
 
 #include <thread>
 #include <vector>

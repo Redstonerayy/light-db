@@ -30,5 +30,4 @@ void Client::Result()
     std::vector<char> data = receive_data(this->sockfd);
     data.emplace_back(0);
     printf("%s\n", data.data());
-    printf("%zu", data.size());
 }

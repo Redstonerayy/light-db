@@ -12,24 +12,6 @@
 
 #include "socket_shared.hpp"
 
-/*------------ get addressinfo for localhost to start connect on port ------------*/
-struct addrinfo *get_remote_address(std::string ip, std::string port)
-{
-    struct addrinfo hints;
-    memset(&hints, 0, sizeof hints);
-    hints.ai_family = AF_UNSPEC; // AF_UNSPEC, AF_INET or AF_INET6
-    hints.ai_socktype = SOCK_STREAM;
-
-    int status;
-    struct addrinfo *serverinfo;
-    if ((status = getaddrinfo(ip.c_str(), port.c_str(), &hints, &serverinfo)) != 0)
-    {
-        printf("Error calling getaddrinfo(): %s\n", gai_strerror(status));
-        return NULL;
-    }
-    return serverinfo;
-}
-
 void connect_on_socket(int sockfd, struct addrinfo *clientinfo)
 {
     if (connect(sockfd, clientinfo->ai_addr, clientinfo->ai_addrlen) == -1)

@@ -17,14 +17,14 @@ set(INCLUDE_DIRS src/include thirdparty/openssl-3.1.4/include thirdparty/alpaca/
 set(LIBS ${SSL_LIB} ${CRYPTO_LIB})
 
 # ------------ server ------------ #
-FILE(GLOB SERVER_SOURCE_FILES src/server/*.cpp src/sockets/*.cpp src/database/*.cpp)
+FILE(GLOB SERVER_SOURCE_FILES src/server/*.cpp src/server/tcp_socket_server/*.cpp src/socket/*.cpp src/database/*.cpp)
 add_executable(lightdb ${SERVER_SOURCE_FILES})
 target_include_directories(lightdb PRIVATE ${INCLUDE_DIRS})
 target_link_libraries(lightdb ${LIBS})
 set_property(TARGET lightdb PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 
 # ------------ client ------------ #
-FILE(GLOB CLIENT_SOURCE_FILES src/client/*.cpp src/sockets/*.cpp src/database/*.cpp)
+FILE(GLOB CLIENT_SOURCE_FILES src/client/*.cpp src/socket/*.cpp src/database/*.cpp)
 add_executable(ldc ${CLIENT_SOURCE_FILES})
 target_include_directories(ldc PRIVATE ${INCLUDE_DIRS})
 target_link_libraries(ldc ${LIBS})

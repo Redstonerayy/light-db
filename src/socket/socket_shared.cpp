@@ -9,6 +9,7 @@
 #include <string>
 
 #include "socket_shared.hpp"
+#include "socket_funcs.hpp"
 
 /*------------ convert sockaddr to address matching ip version ------------*/
 void *get_internet_addr(struct sockaddr *sa)
@@ -30,40 +31,6 @@ int create_nonblocking_socket(struct addrinfo *info)
     }
     fcntl(sockfd, F_SETFL, O_NONBLOCK);
     return sockfd;
-}
-
-bool wait_for_pollevent(int sockfd, int event, int timeout)
-{
-    struct pollfd pfds[1];
-    pfds[0].fd = sockfd;
-    pfds[0].events = event;
-
-    int status = poll(pfds, 1, timeout);
-    if (status > 0 && pfds[0].revents & event)
-        return true;
-    return false;
-}
-
-int send_all(int s, const char *buf, int *len)
-{
-    int total = 0;
-    int bytesleft = *len;
-    int n;
-
-    while (total < *len)
-    {
-        n = send(s, buf + total, bytesleft, 0);
-        if (n == -1)
-        {
-            break;
-        }
-        total += n;
-        bytesleft -= n;
-    }
-
-    *len = total;
-
-    return (n == -1) ? -1 : 0;
 }
 
 void send_data(int sockfd, std::string querystring)

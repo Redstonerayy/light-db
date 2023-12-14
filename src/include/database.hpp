@@ -1,6 +1,6 @@
 #pragma once
-#ifndef DATABASE_CLASS_HPP
-#define DATABASE_CLASS_HPP
+#ifndef DATABASE_HPP
+#define DATABASE_HPP
 
 #include <string>
 
