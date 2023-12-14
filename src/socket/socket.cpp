@@ -75,7 +75,7 @@ int Socket::bind_to(struct addrinfo *info)
     return 0;
 }
 
-void Socket::listen_on(std::string ip, std::string port, bool blocking)
+void Socket::listen_on(std::string port, int backlog, bool blocking)
 {
     struct addrinfo *info_linked_list = get_local_address(port);
     struct addrinfo *info = info_linked_list;
@@ -84,7 +84,7 @@ void Socket::listen_on(std::string ip, std::string port, bool blocking)
     if(this->bind_to(info) == -1)
         return;
 
-    if (listen(this->sockfd, 50) == -1)
+    if (listen(this->sockfd, backlog) == -1)
     {
         printf("Error calling listen(): %s\n", strerror(errno));
         exit(1);

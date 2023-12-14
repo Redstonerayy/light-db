@@ -11,8 +11,8 @@
 #include "listener.hpp"
 #include "server_constants.hpp"
 #include "tcp_socket_server.hpp"
-#include "socket_server.hpp"
-#include "socket_shared.hpp"
+#include "socket.hpp"
+#include "socket_funcs.hpp"
 
 int accept_incoming_connection(int sockfd)
 {
@@ -50,7 +50,7 @@ void add_incoming_connections_to_queue(int sockfd, TCP_Socket_Server &server)
 
 void listener_func(TCP_Socket_Server &server)
 {
-    struct addrinfo *serverinfo = get_local_address(PORT);
-    int sockfd = make_listening_socket(serverinfo, BACKLOG);
-    add_incoming_connections_to_queue(sockfd, server);
+    Socket socket = Socket();
+    socket.listen_on(PORT, BACKLOG);
+    add_incoming_connections_to_queue(socket.sockfd, server);
 }

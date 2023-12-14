@@ -12,11 +12,11 @@
 #include <string>
 
 #include "worker.hpp"
-#include "socket_shared.hpp"
+#include "structs.hpp"
 #include "server_constants.hpp"
 #include "tcp_socket_server.hpp"
-#include "structs.hpp"
 #include "database.hpp"
+#include "socket_funcs.hpp"
 
 template <class T>
 T queue_front_pop(std::queue<T> &q)

@@ -1,5 +1,5 @@
-#include "client_config.hpp"
-#include "client_class.hpp"
+#include "client_constants.hpp"
+#include "client.hpp"
 
 int main(int argc, char *argv[])
 {

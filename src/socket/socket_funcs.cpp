@@ -89,3 +89,18 @@ int send_all(int s, const char *buf, int *len)
 
     return (n == -1) ? -1 : 0;
 }
+
+void send_data(int sockfd, std::string querystring)
+{
+    bool pollout_event = wait_for_pollevent(sockfd, POLLOUT, -1);
+    if (pollout_event)
+    {
+        const char *msg = querystring.c_str();
+        int len = querystring.size();
+        int bytes_send = send_all(sockfd, msg, &len);
+        if (bytes_send == -1)
+            printf("Error calling send_all()");
+        if (bytes_send > 0)
+            printf("%d Bytes Send\n", bytes_send);
+    }
+}
