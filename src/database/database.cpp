@@ -5,11 +5,6 @@
 
 #include "structs.hpp"
 
-Database::Database(std::string db_path)
-{
-    this->db_path = db_path;
-}
-
 std::string Database::process_connection(Connection *con)
 {
     std::string query = this->extract_query_from_connection(con);
@@ -17,7 +12,7 @@ std::string Database::process_connection(Connection *con)
     return query_result;
 }
 
-std::string Database::extract_query_from_connection(Connection *con)
+std::string Database::extract_query_from_connection(Connection *con) const
 {
     bool double_quote = false;
     bool single_quote = false;
@@ -40,7 +35,7 @@ std::string Database::extract_query_from_connection(Connection *con)
     return query;
 }
 
-std::string Database::execute_query(std::string query_string)
+std::string Database::execute_query(const std::string &query_string)
 {
     return query_string;
 }
