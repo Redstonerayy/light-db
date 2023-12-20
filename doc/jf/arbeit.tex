@@ -1,0 +1,154 @@
+% set font and paper size
+\documentclass[11pt,a4paper]{article}
+
+% change to german
+\usepackage[german]{babel}
+
+% better hyphenation
+\usepackage[final]{microtype}
+\usepackage{csquotes}
+
+% packages, images, math
+\usepackage{geometry, graphicx, amsmath, amsfonts, array, multicol, multirow}
+
+% bar charts
+\usepackage{bchart}
+
+% check for unused references, not working
+% \usepackage{refcheck}
+
+% for bibliography
+\usepackage[
+    backend=biber,
+    style=alphabetic,
+    sorting=ynt,
+    minalphanames=3,
+]{biblatex}
+% \addbibresource{./references.bib}
+
+% import line spacing
+\usepackage{setspace}
+
+% colors
+\usepackage{xcolor}
+
+% for urls
+% break urls on line end
+\usepackage[breaklinks, colorlinks=true, urlcolor=blue, citecolor=blue, linkcolor=black]{hyperref}
+
+% Remove Indentation at new line
+\setlength{\parindent}{0cm}
+
+% Set Font to Arial, needs xelatex
+\usepackage{unicode-math}
+\usepackage{fontspec}
+\setmainfont{Arial}
+
+% Set Layout
+\geometry{
+    a4paper,
+    left=25mm,
+    right=25mm,
+    top=25mm,
+    bottom=20mm
+}
+
+% set line spacing
+\setstretch{1.5}
+
+% document
+\begin{document}
+
+% deckblatt
+% title
+\title{Light DB Working Title}
+\author{Anton Rodenwald (19)}
+\maketitle
+
+% page settings
+\addtocounter{page}{-2}
+\pagestyle{empty}
+
+\large
+\begin{tabular}{l p{12cm}}
+
+    Fachgebiet:          & Mathematik/Informatik   \\
+
+    Wettbewerbssparte:   & Jugend Forscht          \\
+
+    Bundesland:          & Niedersachsen           \\
+
+    Wettbewerbsjahr:     & 2024                    \\
+
+    Thema des Projektes: & <Text>                  \\
+
+    Projektbetreuerin:   & Birgit Ziegenmeyer      \\
+
+    Institution:         & Schillerschule Hannover \\
+\end{tabular}
+
+\clearpage
+
+% kurzfassung
+\section*{Kurzfassung}
+
+<Text>
+
+\clearpage
+
+% inhaltsverzeichnis
+\renewcommand*\contentsname{Inhaltsverzeichnis}
+
+\tableofcontents
+
+% einleitung
+\include{project_overview.tex}
+
+\section{Materialien, Vorgehen, Methode}
+
+\subsection{Materialien}
+
+\subsection{Vorgehen und Methode}
+
+\subsection{Schwierigkeiten}
+
+\section{Ergebnisse}
+
+\subsection{Generierung von 10 Millionen zufälligen Zahlen in Python}
+
+\clearpage
+
+\section{Ergebnisdiskussion}
+
+\subsection{Erklärung der Ergebnisse}
+
+\subsection{Beantwortung der Forschungsfrage}
+
+\section{Reflexion und Ausblick}
+
+\section{Schlusswort}
+
+\clearpage
+
+\begin{bchart}[min=0, max=30, scale=1.9]
+    \bcbar[label=1, text=List Comprehension Python mit Konvertierung zu numba.typed list]{26.849}
+    \smallskip
+    \bcbar[label=2, text=\hspace{7cm}List Comprehension Python]{9.307}
+    \smallskip
+    \bcbar[label=3, text=\hspace{2cm}List Comprehension Python mit Numba]{1.148}
+    \smallskip
+    \bcbar[label=4, text=\hspace{2cm}NumPy np.random.randint mit Numba]{0.401}
+    \smallskip
+    \bcbar[label=5, text=\hspace{2cm}NumPy np.random.randint]{0.051}
+    \smallskip
+    \bcxlabel{\bf{Ausführungszeit in Sekunden}}
+\end{bchart}
+
+\vspace{0.5cm}
+
+% break urls
+\emergencystretch=0.5em
+
+% \printbibliography[title={Literaturverzeichnis}]
+
+\end{document}

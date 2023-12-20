@@ -25,3 +25,5 @@ clean:
 	rm -rf ./build
 	rm -rf ./run
 	rm -rf ./cmake-build-debug
+	rm -rf ./.idea
+	rm -rf ./.vscode
