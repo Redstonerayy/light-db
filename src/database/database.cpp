@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "database.hpp"
 
@@ -28,7 +29,7 @@ std::string Database::extract_query_from_connection(Connection *con) const
         if (con->buffered_data.at(i) == ';' && !single_quote && !double_quote)
         {
             query = std::string(con->buffered_data.begin(), con->buffered_data.begin() + i + 1);
-            con->buffered_data = std::vector<char>(65536);
+            con->buffered_data = std::vector<char>();
             break;
         }
     }
