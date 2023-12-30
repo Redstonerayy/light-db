@@ -29,3 +29,9 @@ add_executable(ldc ${CLIENT_SOURCE_FILES})
 target_include_directories(ldc PRIVATE ${INCLUDE_DIRS})
 target_link_libraries(ldc ${LIBS})
 set_property(TARGET ldc PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+
+# ------------ test ------------ #
+FILE(GLOB TEST_SOURCE_FILES src/database/*.cpp src/testing/*.cpp)
+add_executable(test ${TEST_SOURCE_FILES})
+target_include_directories(test PRIVATE ${INCLUDE_DIRS})
+set_property(TARGET test PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})

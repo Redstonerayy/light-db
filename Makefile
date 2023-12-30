@@ -21,6 +21,11 @@ client: build
 	cp ./build/ldc ./run/ldc
 	./run/ldc
 
+test: build
+	mkdir -p ./run
+	cp ./build/test ./run/test
+	./run/test
+
 clean:
 	rm -rf ./build
 	rm -rf ./run
