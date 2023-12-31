@@ -2,6 +2,6 @@
 
 #include "btree.hpp"
 
-int main(){
-    BTree* btree = new BTree(32);
+int main() {
+    Table* table = new Table({INT, INT, CHAR_8}, {true});
 }
