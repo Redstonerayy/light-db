@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <iostream>
 #include <numeric>
 #include <vector>
 
@@ -28,7 +29,7 @@ Page::Page(int k_factor, Page* parent_page) {
     this->k_factor = k_factor;
     this->parent_page = parent_page;
     this->first_child_page = nullptr;
-    this->entries.reserve(2 * k_factor);
+    this->entries.reserve(2 * k_factor + 1);
 }
 
 int compare_keys(void* key_l, void* key_r, std::vector<int>& key_bytes) {
@@ -63,31 +64,66 @@ int compare_keys(void* key_l, void* key_r, std::vector<int>& key_bytes) {
         }
         byte_offset += bytes;
     }
+    return 0;
 }
 
 int Page::insert(void* key, std::vector<int>& key_bytes, void* data_pointer) {
-    if (this->entries.size() < 2 * this->k_factor) {
-        if (this->entries.size() == 0) {
-            this->entries.emplace_back(Page_Entry{key, data_pointer, nullptr});
-            return 0;
-        }
+    if (this->entries.size() == 0) {
+        this->entries.emplace_back(Page_Entry{key, data_pointer, nullptr});
+        return 0;
+    }
 
-        int l = 0;
-        int r = this->entries.size() - 1;
-        while (l <= r) {
-            int m = l + (r - l) / 2;
-            int comparison_result = compare_keys(this->entries.at(m).key, key, key_bytes);
-            if (comparison_result == -1) {
-                l = m + 1;
-            } else if (comparison_result == 1) {
-                r = m - 1;
-            } else {
-                return -1;  // no equal keys
-            }
+    int l = 0;
+    int r = this->entries.size() - 1;
+    while (l <= r) {
+        int m = l + (r - l) / 2;
+        int comparison_result = compare_keys(this->entries.at(m).key, key, key_bytes);
+        if (comparison_result == 1) {
+            l = m + 1;
+        } else if (comparison_result == -1) {
+            r = m - 1;
+        } else {
+            return -1;  // no equal keys
         }
-        this->entries.insert(this->entries.begin() + l, Page_Entry{key, data_pointer, nullptr});
+    }
+    if (l == 0 && this->first_child_page != nullptr) {
+        Page_Entry last = this->first_child_page->entries.at(this->first_child_page->entries.size() - 1);
+        if (compare_keys(last.key, key, key_bytes) == -1) {
+            return this->first_child_page->insert(key, key_bytes, data_pointer);
+        } else {
+            this->entries.insert(this->entries.begin() + l, Page_Entry{key, data_pointer, nullptr});
+        }
     } else {
-        // split nodes usw.
+        this->entries.insert(this->entries.begin() + l, Page_Entry{key, data_pointer, nullptr});
+    }
+
+    if (!(this->entries.size() < 2 * this->k_factor + 1)) {
+        if (this->parent_page == nullptr) {
+            if (this->first_child_page == nullptr) {
+                int m = this->entries.size() / 2;
+                Page* new_page = new Page(this->k_factor, this);
+                new_page->entries = std::vector<Page_Entry>(this->entries.begin(), this->entries.begin() + m + 1);
+                this->entries.erase(this->entries.begin(), this->entries.begin() + m + 1);
+                this->first_child_page = new_page;
+            } else if (this->entries.at(this->entries.size() - 1).child_page_pointer == nullptr){
+                for(int i = 0; i < 2 * this->k_factor; ++i){
+                    if(this->entries.at(i).child_page_pointer == nullptr){
+                        Page* new_page = new Page(this->k_factor, this);
+                        new_page->entries = std::vector<Page_Entry>(this->entries.begin() + i + 1, this->entries.end());
+                        this->entries.erase(this->entries.begin() + i + 1, this->entries.end());
+                        this->entries.at(i).child_page_pointer = new_page;
+                        break;
+                    }
+                }
+            }
+            // do better when (root) has children
+        } else {
+            // int m = this->entries.size() / 2;
+            // Page_Entry middle_entry = this->entries.at(m);
+            // new_page->entries = std::vector<Page_Entry>(this->entries.begin() + m + 1, this->entries.end());
+            // this->entries.resize(m);
+        }
+        std::cout << "split\n";
         return 0;
     }
     return 0;
@@ -105,7 +141,7 @@ int BTree::insert(void* key, void* data_pointer) { return this->root_page->inser
 Table::Table(std::vector<TABLE_DATATYPE> schema, std::vector<bool> key_attributes) {
     this->schema = schema;
     this->compute_key_data(key_attributes);
-    this->btree = new BTree(32, this->key_bytes);
+    this->btree = new BTree(2, this->key_bytes);
 }
 
 void Table::insert(void* data) {
@@ -113,11 +149,7 @@ void Table::insert(void* data) {
     void* key = malloc(sizeof(char) * key_byte_length);
     int key_offset_bytes = 0;
     for (int i = 0; i < this->key_schema_offsets.size(); ++i) {
-        memcpy(
-            ((char*)key + key_offset_bytes),
-            ((char*)data + this->key_schema_offsets.at(i)),
-            this->key_bytes.at(i)
-        );
+        memcpy(((char*)key + key_offset_bytes), ((char*)data + this->key_schema_offsets.at(i)), this->key_bytes.at(i));
         key_byte_length += this->key_bytes.at(i);
     }
 

@@ -3,8 +3,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.24)
 project(lightdb)
 
 # ------------ build options ------------ #
-set(C_FLAGS "-O2 -Wall -std=c17")
-set(CXX_FLAGS "-O2 -Wall -std=c++20")
+set(C_FLAGS "-Wall -std=c17")
+set(CXX_FLAGS "-Wall -std=c++20")
 
 # ------------ dependencies ------------ #
 find_library(SSL_LIB libssl.a PATHS ./thirdparty/openssl-3.1.4 REQUIRED NO_DEFAULT_PATH)

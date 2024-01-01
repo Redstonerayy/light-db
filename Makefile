@@ -5,26 +5,32 @@ deps:
 	./scripts/openssl.sh
 
 build:
-	C=clang CXX=clang++ cmake -B ./build -G Ninja -S .
-	ninja -C ./build
+	C=clang CXX=clang++ cmake -B ./build -G "Ninja Multi-Config" -S .
+	ninja -C ./build -f build-Release.ninja
+	ninja -C ./build -f build-Debug.ninja
 
 start: build
 	mkdir -p ./run
 	mkdir -p ./run/tls
 	cp ./res/cert.pem ./run/tls/cert.pem
 	cp ./res/key.pem ./run/tls/key.pem
-	cp ./build/lightdb ./run/lightdb
+	cp ./build/Release/lightdb ./run/lightdb
 	./scripts/start.sh
 
 client: build
 	mkdir -p ./run
-	cp ./build/ldc ./run/ldc
+	cp ./build/Release/ldc ./run/ldc
 	./run/ldc
 
 test: build
 	mkdir -p ./run
-	cp ./build/test ./run/test
+	cp ./build/Debug/test ./run/test
 	./run/test
+
+debug: build
+	mkdir -p ./run
+	cp ./build/Debug/test ./run/test
+	gdb -q -tui ./run/test -x ./src/testing/debug.gdb
 
 clean:
 	rm -rf ./build
