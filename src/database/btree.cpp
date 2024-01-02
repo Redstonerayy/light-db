@@ -60,7 +60,7 @@ int compare_keys(void* key_l, void* key_r, std::vector<int>& key_bytes) {
     return 0;
 }
 
-Page::Page(int k_factor, std::vector<int>& key_bytes, Page* parent_page, BTree* btree) {
+Page::Page(int k_factor, std::vector<int> key_bytes, Page* parent_page, BTree* btree) {
     this->k_factor = k_factor;
     this->key_bytes = key_bytes;
     this->parent_page = parent_page;

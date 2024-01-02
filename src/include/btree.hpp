@@ -7,16 +7,18 @@ struct Key {
     void* data_ptr;
 };
 
+class BTree;
+
 class Page {
    public:
     Page* parent_page;
     BTree* btree;
-    std::vector<int>& key_bytes;
+    std::vector<int> key_bytes;
 
     std::vector<Key> keys;
     std::vector<Page*> page_ptrs;
 
-    Page(int k_factor, std::vector<int>& key_bytes, Page* parent_page, BTree* btree);
+    Page(int k_factor, std::vector<int> key_bytes, Page* parent_page, BTree* btree);
     int insert_key(void* key, void* data_pointer);
     int read_key(void* key);
     int update_key(void* key, void* data_pointer);
