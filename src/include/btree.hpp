@@ -2,22 +2,25 @@
 
 #include <vector>
 
-class Page;
-
-struct Page_Entry {
+struct Key {
     void* key;
-    void* data_pointer;
-    Page* child_page_pointer;
+    void* data_ptr;
 };
 
 class Page {
    public:
     Page* parent_page;
-    Page* first_child_page;
-    std::vector<Page_Entry> entries;
+    BTree* btree;
+    std::vector<int>& key_bytes;
 
-    Page(int k_factor, Page* parent_page);
-    int insert(void* key, std::vector<int>& key_bytes, void* data_pointer);
+    std::vector<Key> keys;
+    std::vector<Page*> page_ptrs;
+
+    Page(int k_factor, std::vector<int>& key_bytes, Page* parent_page, BTree* btree);
+    int insert_key(void* key, void* data_pointer);
+    int read_key(void* key);
+    int update_key(void* key, void* data_pointer);
+    int delete_key(void* key);
 
    private:
     int k_factor;
@@ -49,12 +52,12 @@ enum TABLE_DATATYPE {
 class Table {
    public:
     BTree* btree;
-    std::vector<int> key_schema_offsets;
     std::vector<int> key_bytes;
+    std::vector<int> key_schema_offsets;
     std::vector<TABLE_DATATYPE> schema;
 
     Table(std::vector<TABLE_DATATYPE> schema, std::vector<bool> key_attributes);
-    void insert(void* data);
+    int insert(void* data);
 
    private:
     void compute_key_data(std::vector<bool> key_attributes);
