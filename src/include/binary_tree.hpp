@@ -3,7 +3,10 @@
 #include <vector>
 
 struct BT_Node {
+    void* key;
     void* data;
+    short balance;
+    BT_Node* parent;
     BT_Node* left;
     BT_Node* right;
 };
@@ -16,7 +19,14 @@ class Binary_Tree {
     std::vector<int> key_attribute_lengths;
 
     Binary_Tree(std::vector<int> key_attribute_offsets, std::vector<int> key_attribute_lengths);
-    int insert();
+    int insert(void* data);
+    void* search(void* key);
+    int remove(void* key);
+
+   private:
+    void* compute_key(void* data);
+    BT_Nodes search_for_key(void* key);
+    BT_Nodes find_inorder_successor(BT_Node* node);
 };
 
 enum TABLE_DATATYPE {

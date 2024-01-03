@@ -1,5 +1,11 @@
 #include "binary_tree.hpp"
 
+#include <cstdlib>
+#include <cstring>
+#include <numeric>
+
+enum DIRECTIONS { LEFT = -1, RIGHT = 1 };
+
 int get_byte_size(TABLE_DATATYPE type) {
     switch (type) {
         case INT:
@@ -19,9 +25,9 @@ int get_byte_size(TABLE_DATATYPE type) {
     }
 }
 
-int compare_keys(void* key_l, void* key_r, std::vector<int>& key_bytes) {
+int compare_keys(void* key_l, void* key_r, std::vector<int>& key_attribute_lengths) {
     int byte_offset = 0;
-    for (const int& bytes : key_bytes) {
+    for (const int& bytes : key_attribute_lengths) {
         if (bytes <= 8) {
             long left;
             long right;
@@ -54,10 +60,139 @@ int compare_keys(void* key_l, void* key_r, std::vector<int>& key_bytes) {
     return 0;
 }
 
-Binary_Tree::Binary_Tree(std::vector<int> key_attribute_offsets, std::vector<int> key_attribute_lengths){
+Binary_Tree::Binary_Tree(std::vector<int> key_attribute_offsets, std::vector<int> key_attribute_lengths) {
     this->key_attribute_offsets = key_attribute_offsets;
     this->key_attribute_lengths = key_attribute_lengths;
     this->root_node = nullptr;
+}
+
+int Binary_Tree::insert(void* data) {
+    void* key = this->compute_key(data);
+
+    if (this->root_node == nullptr) {
+        this->root_node = new BT_Node{key, data, 0, nullptr, nullptr, nullptr};
+        return 0;
+    }
+
+    BT_Node* bt_node = this->root_node;
+
+    while (true) {
+        int compare_result = compare_keys(bt_node->key, key, this->key_attribute_lengths);
+        if (compare_result == -1) {
+            if (bt_node->left == nullptr) {
+                bt_node->left = new BT_Node{key, data, 0, bt_node, nullptr, nullptr};
+            } else {
+                bt_node = bt_node->left;
+            }
+        } else if (compare_result == 1) {
+            if (bt_node->right == nullptr) {
+                bt_node->right = new BT_Node{key, data, 0, bt_node, nullptr, nullptr};
+            } else {
+                bt_node = bt_node->right;
+            }
+        } else {
+            return -1;
+        }
+    }
+}
+
+void* Binary_Tree::search(void* key) { return this->search_for_key(key).bt_node->data; }
+
+BT_Node* Binary_Tree::search_for_key(void* key) {
+    if (this->root_node == nullptr) {
+        return bt_node;
+    }
+
+    BT_Node* bt_node = this->root_node;
+
+    while (true) {
+        int compare_result = compare_keys(bt_node->key, key, this->key_attribute_lengths);
+        if (compare_result == -1) {
+            if (bt_node->left == nullptr) {
+                return bt_node;
+            } else {
+                bt_node = bt_node->left;
+            }
+        } else if (compare_result == 1) {
+            if (bt_node->right == nullptr) {
+                return bt_node;
+            } else {
+                bt_node = bt_node->right;
+            }
+        } else {
+            return bt_node;
+        }
+    }
+}
+
+bool has_no_children(BT_Node* node) { return node->left == nullptr && node->right == nullptr; }
+
+bool has_two_children(BT_Node* node) { return node->left != nullptr && node->right != nullptr; }
+
+BT_Nodes Binary_Tree::find_inorder_successor(BT_Node* node) {
+    BT_Node* bt_node_before = node;
+    int direction = 1;
+    BT_Node* bt_node = node->right;
+    while (bt_node->left != nullptr) {
+        bt_node_before = bt_node;
+        direction = -1;
+        bt_node = bt_node->left;
+    }
+
+    return BT_Nodes{bt_node_before, direction, bt_node};
+}
+
+int Binary_Tree::remove(void* key) {
+    BT_Nodes nodes = this->search_for_key(key);
+    if (nodes.bt_node == nullptr) return -1;
+    if (has_no_children(nodes.bt_node)) {
+        if (nodes.bt_node_before == nullptr) {
+            this->root_node = nullptr;
+        } else if (nodes.direction == LEFT) {
+            nodes.bt_node_before->left = nullptr;
+        } else if (nodes.direction == RIGHT) {
+            nodes.bt_node_before->right = nullptr;
+        }
+    } else if (has_two_children(nodes.bt_node)) {
+        BT_Nodes inorder_successor_info = this->find_inorder_successor(nodes.bt_node);
+        if (nodes.bt_node_before == nullptr) {
+            this->root_node = inorder_successor_info.bt_node;
+        } else if (nodes.direction == LEFT) {
+            nodes.bt_node_before->left = inorder_successor_info.bt_node;
+        } else if (nodes.direction == RIGHT) {
+            nodes.bt_node_before->right = inorder_successor_info.bt_node;
+        }
+        if (inorder_successor_info.direction == LEFT) {
+            inorder_successor_info.bt_node_before->left = nullptr;
+        } else {
+            inorder_successor_info.bt_node_before->right = nullptr;
+        }
+    } else {
+        if (nodes.bt_node_before == nullptr) {
+            if (nodes.direction == LEFT) {
+                this->root_node = nodes.bt_node->left;
+            } else {
+                this->root_node = nodes.bt_node->right;
+            }
+        } else if (nodes.direction == LEFT) {
+            nodes.bt_node_before->left = nodes.bt_node->left;
+        } else if (nodes.direction == RIGHT) {
+            nodes.bt_node_before->right = nodes.bt_node->right;
+        }
+    }
+    return 0;
+}
+
+void* Binary_Tree::compute_key(void* data) {
+    int key_byte_length = std::accumulate(this->key_attribute_lengths.begin(), this->key_attribute_lengths.end(), 0);
+    void* key = malloc(sizeof(char) * key_byte_length);
+    int key_offset_bytes = 0;
+    for (int i = 0; i < this->key_attribute_offsets.size(); ++i) {
+        memcpy(((char*)key + key_offset_bytes), ((char*)data + this->key_attribute_offsets.at(i)), this->key_attribute_lengths.at(i));
+        key_byte_length += this->key_attribute_lengths.at(i);
+    }
+
+    return key;
 }
 
 Table::Table(std::vector<TABLE_DATATYPE> schema, std::vector<bool> key_attributes) {
@@ -77,16 +212,4 @@ void Table::compute_key_data(std::vector<bool> key_attributes) {
     }
 }
 
-int Table::insert(void* data) {
-    int key_byte_length = std::accumulate(this->key_bytes.begin(), this->key_bytes.end(), 0);
-    void* key = malloc(sizeof(char) * key_byte_length);
-    int key_offset_bytes = 0;
-    for (int i = 0; i < this->key_schema_offsets.size(); ++i) {
-        memcpy(((char*)key + key_offset_bytes), ((char*)data + this->key_schema_offsets.at(i)), this->key_bytes.at(i));
-        key_byte_length += this->key_bytes.at(i);
-    }
-
-    return this->btree->insert(key, data);
-}
-
-
+int Table::insert(void* data) { return this->binary_tree->insert(data); }
