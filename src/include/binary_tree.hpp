@@ -25,8 +25,9 @@ class Binary_Tree {
 
    private:
     void* compute_key(void* data);
-    BT_Nodes search_for_key(void* key);
-    BT_Nodes find_inorder_successor(BT_Node* node);
+    BT_Node* search_for_key(void* key);
+    BT_Node* find_inorder_successor(BT_Node* node);
+    void rebalance(BT_Node* bt_node);
 };
 
 enum TABLE_DATATYPE {
@@ -49,6 +50,8 @@ class Table {
 
     Table(std::vector<TABLE_DATATYPE> schema, std::vector<bool> key_attributes);
     int insert(void* data);
+    void* search(void* key);
+    int remove(void* key);
 
    private:
     void compute_key_data(std::vector<bool> key_attributes);

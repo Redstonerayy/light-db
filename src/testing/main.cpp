@@ -12,6 +12,11 @@ int main() {
         void* data = malloc(sizeof(char) * 16);
         *((int*)data) = keys[i];
         table->insert(data);
-        print_binary_tree(table->binary_tree, table->key_attribute_lengths);
     }
+    print_binary_tree(table->binary_tree, table->key_attribute_lengths);
+    int search = 19;
+    int del = 15;
+    std::cout << *(int*)table->search((void*)&search) << "\n";
+    std::cout << table->remove((void*)&del) << "\n";
+    print_binary_tree(table->binary_tree, table->key_attribute_lengths);
 }
