@@ -84,7 +84,7 @@ void Binary_Tree::rebalance(BT_Node* bt_node) {
             return;
         else if (current_node->parent->balance == -2 || current_node->parent->balance == 2) {
             // rebalance parent
-            
+
             return;
         }
     }
@@ -113,7 +113,7 @@ int Binary_Tree::insert(void* data) {
         } else if (compare_result == 1) {
             if (bt_node->right == nullptr) {
                 bt_node->right = new BT_Node{key, data, 0, bt_node, nullptr, nullptr};
-                this->rebalance();
+                this->rebalance(bt_node->right);
                 return 0;
             } else {
                 bt_node = bt_node->right;
