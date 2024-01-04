@@ -60,6 +60,27 @@ int compare_keys(void* key_l, void* key_r, std::vector<int>& key_attribute_lengt
     return 0;
 }
 
+bool has_no_children(BT_Node* node) { return node->left == nullptr && node->right == nullptr; }
+
+bool has_two_children(BT_Node* node) { return node->left != nullptr && node->right != nullptr; }
+
+void replace_in_parent(BT_Node* bt_node, BT_Node* bt_replace, BT_Node** root_node) {
+    if (bt_node->parent == nullptr) {
+        *root_node = bt_replace;
+        bt_replace->parent = nullptr;
+    } else {
+        if (bt_node->parent->left == bt_node) {
+            bt_node->parent->left = bt_replace;
+        } else if (bt_node->parent->right == bt_node) {
+            bt_node->parent->right = bt_replace;
+        }
+        if (bt_replace != nullptr) {
+            bt_replace->parent = bt_node->parent;
+            bt_node->parent = nullptr;
+        }
+    }
+}
+
 Binary_Tree::Binary_Tree(std::vector<int> key_attribute_offsets, std::vector<int> key_attribute_lengths) {
     this->key_attribute_offsets = key_attribute_offsets;
     this->key_attribute_lengths = key_attribute_lengths;
@@ -74,6 +95,10 @@ void update_parent_balance(BT_Node* bt_node) {
     }
 }
 
+bool apply_right_left_rotation(BT_Node* node) { return node->right->left != nullptr; }
+
+bool apply_left_right_rotation(BT_Node* node) { return node->left->right != nullptr; }
+
 void Binary_Tree::rebalance(BT_Node* bt_node) {
     BT_Node* current_node = bt_node;
     while (current_node->parent != nullptr) {
@@ -83,7 +108,69 @@ void Binary_Tree::rebalance(BT_Node* bt_node) {
         } else if (current_node->parent->balance == 0)
             return;
         else if (current_node->parent->balance == -2 || current_node->parent->balance == 2) {
-            // rebalance parent
+            BT_Node* imbalanced_node = current_node->parent;
+            if (imbalanced_node->balance == 2) {  // right-heavy
+                if (has_two_children(imbalanced_node->right)) {
+                    BT_Node* temp = imbalanced_node->right->left;
+                    imbalanced_node->right->left = imbalanced_node;
+                    replace_in_parent(imbalanced_node, imbalanced_node->right, &this->root_node);
+                    imbalanced_node->parent = imbalanced_node->right;
+                    imbalanced_node->right = temp;
+                    imbalanced_node->parent->balance = 0;
+                    imbalanced_node->balance = 0;
+                } else {
+                    if (apply_right_left_rotation(imbalanced_node)) {
+                        imbalanced_node->right->left->right = imbalanced_node->right;
+                        imbalanced_node->right->left->left = imbalanced_node;
+
+                        replace_in_parent(imbalanced_node, imbalanced_node->right->left, &this->root_node);
+
+                        imbalanced_node->parent = imbalanced_node->right->left;
+                        imbalanced_node->right = nullptr;
+
+                        imbalanced_node->parent->right->left = nullptr;
+                        imbalanced_node->parent->right->parent = imbalanced_node->parent;
+                    } else {  // left rotation
+                        imbalanced_node->right->left = imbalanced_node;
+                        replace_in_parent(imbalanced_node, imbalanced_node->right, &this->root_node);
+                        imbalanced_node->parent = imbalanced_node->right;
+                        imbalanced_node->left = nullptr;
+                    }
+                    imbalanced_node->parent->balance = 0;
+                    imbalanced_node->balance = 0;
+                }
+
+            } else if (imbalanced_node->balance == -2) {  // left-heavy
+                if (has_two_children(imbalanced_node->left)) {
+                    BT_Node* temp = imbalanced_node->left->right;
+                    imbalanced_node->left->right = imbalanced_node;
+                    replace_in_parent(imbalanced_node, imbalanced_node->left, &this->root_node);
+                    imbalanced_node->parent = imbalanced_node->left;
+                    imbalanced_node->left = temp;
+                    imbalanced_node->parent->balance = 0;
+                    imbalanced_node->balance = 0;
+                } else {
+                    if (apply_left_right_rotation(imbalanced_node)) {
+                        imbalanced_node->left->right->left = imbalanced_node->left;
+                        imbalanced_node->left->right->right = imbalanced_node;
+
+                        replace_in_parent(imbalanced_node, imbalanced_node->left->right, &this->root_node);
+
+                        imbalanced_node->parent = imbalanced_node->left->right;
+                        imbalanced_node->left = nullptr;
+
+                        imbalanced_node->parent->left->right = nullptr;
+                        imbalanced_node->parent->left->parent = imbalanced_node->parent;
+                    } else {  // right rotation
+                        imbalanced_node->left->right = imbalanced_node;
+                        replace_in_parent(imbalanced_node, imbalanced_node->left, &this->root_node);
+                        imbalanced_node->parent = imbalanced_node->left;
+                        imbalanced_node->left = nullptr;
+                    }
+                    imbalanced_node->parent->balance = 0;
+                    imbalanced_node->balance = 0;
+                }
+            }
 
             return;
         }
@@ -102,7 +189,7 @@ int Binary_Tree::insert(void* data) {
 
     while (true) {
         int compare_result = compare_keys(bt_node->key, key, this->key_attribute_lengths);
-        if (compare_result == -1) {
+        if (compare_result == 1) {
             if (bt_node->left == nullptr) {
                 bt_node->left = new BT_Node{key, data, 0, bt_node, nullptr, nullptr};
                 this->rebalance(bt_node->left);
@@ -110,7 +197,7 @@ int Binary_Tree::insert(void* data) {
             } else {
                 bt_node = bt_node->left;
             }
-        } else if (compare_result == 1) {
+        } else if (compare_result == -1) {
             if (bt_node->right == nullptr) {
                 bt_node->right = new BT_Node{key, data, 0, bt_node, nullptr, nullptr};
                 this->rebalance(bt_node->right);
@@ -153,10 +240,6 @@ BT_Node* Binary_Tree::search_for_key(void* key) {
     }
 }
 
-bool has_no_children(BT_Node* node) { return node->left == nullptr && node->right == nullptr; }
-
-bool has_two_children(BT_Node* node) { return node->left != nullptr && node->right != nullptr; }
-
 BT_Node* Binary_Tree::find_inorder_successor(BT_Node* node) {
     BT_Node* bt_node = node->right;
     while (bt_node->left != nullptr) {
@@ -166,14 +249,6 @@ BT_Node* Binary_Tree::find_inorder_successor(BT_Node* node) {
     return bt_node;
 }
 
-void replace_in_parent(BT_Node* bt_node, BT_Node* bt_replace) {
-    if (bt_node->parent->left == bt_node) {
-        bt_node->parent->left = bt_replace;
-    } else if (bt_node->parent->right == bt_node) {
-        bt_node->parent->right = bt_replace;
-    }
-}
-
 int Binary_Tree::remove(void* key) {
     BT_Node* bt_node = this->search_for_key(key);
     if (bt_node == nullptr) return -1;
@@ -181,16 +256,16 @@ int Binary_Tree::remove(void* key) {
         if (bt_node->parent == nullptr) {
             this->root_node = nullptr;
         } else {
-            replace_in_parent(bt_node, nullptr);
+            replace_in_parent(bt_node, nullptr, &this->root_node);
         }
     } else if (has_two_children(bt_node)) {
         BT_Node* inorder_successor = this->find_inorder_successor(bt_node);
         if (bt_node->parent == nullptr) {
             this->root_node = inorder_successor;
-            replace_in_parent(inorder_successor, nullptr);
+            replace_in_parent(inorder_successor, nullptr, &this->root_node);
         } else {
-            replace_in_parent(bt_node, inorder_successor);
-            replace_in_parent(inorder_successor, nullptr);
+            replace_in_parent(bt_node, inorder_successor, &this->root_node);
+            replace_in_parent(inorder_successor, nullptr, &this->root_node);
         }
     } else {
         BT_Node* child;
@@ -202,7 +277,7 @@ int Binary_Tree::remove(void* key) {
         if (bt_node->parent == nullptr) {
             this->root_node = child;
         } else {
-            replace_in_parent(bt_node, child);
+            replace_in_parent(bt_node, child, &this->root_node);
         }
     }
     return 0;

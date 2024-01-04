@@ -30,7 +30,7 @@ test: build
 debug: build
 	mkdir -p ./run
 	cp ./build/Debug/test ./run/test
-	gdb -q -tui ./run/test -x ./src/testing/debug.gdb
+	gdb -q ./run/test -x ./src/testing/debug.gdb
 
 clean:
 	rm -rf ./build

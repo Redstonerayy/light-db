@@ -1,28 +1,38 @@
+#include <cmath>
 #include <iostream>
 #include <queue>
 #include <utility>
 #include <vector>
-#include <cmath>
 
 #include "binary_tree.hpp"
 
-void print_binary_tree(Binary_Tree* binary_tree, std::vector<int>& key_attribute_lengths){
+void print_binary_tree(Binary_Tree* binary_tree, std::vector<int>& key_attribute_lengths) {
     std::queue<std::pair<BT_Node*, int>> print_q;
     print_q.push({binary_tree->root_node, 0});
 
     int last_level = -1;
-    int w = 201;
+    int w = 151;
+    int max = 10;
+    int c = 0;
 
     while (!print_q.empty()) {
+        ++c;
+        if (c > max) break;
         std::pair<BT_Node*, int> current_node = print_q.front();
         print_q.pop();
-        if (current_node.first->left != nullptr) {
-            print_q.push({current_node.first->left, current_node.second + 1});
+        if (!(current_node.first == nullptr)) {
+            if (current_node.first->left != nullptr) {
+                print_q.push({current_node.first->left, current_node.second + 1});
+            } else {
+                print_q.push({nullptr, current_node.second + 1});
+            }
+            if (current_node.first->right != nullptr) {
+                print_q.push({current_node.first->right, current_node.second + 1});
+            } else {
+                print_q.push({nullptr, current_node.second + 1});
+            }
         }
-        if (current_node.first->right != nullptr) {
-            print_q.push({current_node.first->right, current_node.second + 1});
-        }
-        if(last_level < current_node.second){
+        if (last_level < current_node.second) {
             std::cout << "\n";
             std::cout << "LV " << current_node.second << " : ";
             last_level = current_node.second;
@@ -30,33 +40,41 @@ void print_binary_tree(Binary_Tree* binary_tree, std::vector<int>& key_attribute
         int el_count = std::pow(2, current_node.second);
         int offset = w / el_count;
 
-        void* key = current_node.first->key;
-        int byte_offset = 0;
-        for(int i = 0; i < offset / 2; ++i){
+        for (int i = 0; i < offset / 2; ++i) {
             std::cout << " ";
         }
-        for (const int& bytes : key_attribute_lengths) {
-            if (bytes <= 8) {
-                long integer;
-                if (bytes == 4) {
-                    integer = *((int*)((char*)key + byte_offset));
-                } else if (bytes == 8) {
-                    integer = *((long*)((char*)key + byte_offset));
+
+        if (current_node.first == nullptr) {
+            std::cout << "--/--";
+        } else {
+            void* key = current_node.first->key;
+            int byte_offset = 0;
+
+            for (const int& bytes : key_attribute_lengths) {
+                if (bytes <= 8) {
+                    long integer;
+                    if (bytes == 4) {
+                        integer = *((int*)((char*)key + byte_offset));
+                    } else if (bytes == 8) {
+                        integer = *((long*)((char*)key + byte_offset));
+                    }
+                    std::cout << integer << " ";
+                } else {
+                    char* begin = (char*)key + byte_offset;
+                    for (int i = 0; i < bytes; ++i) {
+                        std::cout << begin[i] << " ";
+                    }
                 }
-                std::cout << integer << " ";
-            } else {
-                char* begin = (char*)key + byte_offset;
-                for (int i = 0; i < bytes; ++i) {
-                    std::cout << begin[i] << " ";
-                }
+                byte_offset += bytes;
             }
-            byte_offset += bytes;
+            std::cout << "/ " << current_node.first->balance;
         }
-        for(int i = 0; i < offset / 2; ++i){
+
+        for (int i = 0; i < offset / 2; ++i) {
             std::cout << " ";
         }
     }
-    std::cout << "\n---------------\n";
+    std::cout << "\n------------------------------------------------------------------------------------------------------------------------\n";
 }
 
 // void print_b_tree(BTree* btree, std::vector<int>& key_bytes) {
