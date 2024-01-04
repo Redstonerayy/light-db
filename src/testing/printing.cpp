@@ -12,12 +12,12 @@ void print_binary_tree(Binary_Tree* binary_tree, std::vector<int>& key_attribute
 
     int last_level = -1;
     int w = 151;
-    int max = 10;
-    int c = 0;
+    // int max = 10;
+    // int c = 0;
 
     while (!print_q.empty()) {
-        ++c;
-        if (c > max) break;
+        // ++c;
+        // if (c > max) break;
         std::pair<BT_Node*, int> current_node = print_q.front();
         print_q.pop();
         if (!(current_node.first == nullptr)) {
