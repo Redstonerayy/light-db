@@ -14,9 +14,6 @@
 % bar charts
 \usepackage{bchart}
 
-% check for unused references, not working
-% \usepackage{refcheck}
-
 % for bibliography
 \usepackage[
     backend=biber,
@@ -24,7 +21,10 @@
     sorting=ynt,
     minalphanames=3,
 ]{biblatex}
-% \addbibresource{./references.bib}
+\addbibresource{./references.bib}
+
+% remove dots in ToC
+\usepackage{tocloft}
 
 % import line spacing
 \usepackage{setspace}
@@ -56,18 +56,21 @@
 % set line spacing
 \setstretch{1.5}
 
+% remove ToC page number
+\AtBeginDocument{\addtocontents{toc}{\protect\thispagestyle{empty}}} 
+
 % document
 \begin{document}
 
 % deckblatt
 % title
-\title{Light DB Working Title}
+\title{Datenbanken und Daten - \\ Das muss passen wie Schlüssel und Schloss}
 \author{Anton Rodenwald (19)}
 \maketitle
 
 % page settings
-\addtocounter{page}{-2}
-\pagestyle{empty}
+\addtocounter{page}{-4}
+\thispagestyle{empty}
 
 \large
 \begin{tabular}{l p{12cm}}
@@ -89,7 +92,10 @@
 
 \clearpage
 
+\pagestyle{empty}
+
 % kurzfassung
+
 \section*{Kurzfassung}
 
 <Text>
@@ -97,45 +103,18 @@
 \clearpage
 
 % inhaltsverzeichnis
+
 \renewcommand*\contentsname{Inhaltsverzeichnis}
+
+\renewcommand{\cftdot}{}
 
 \tableofcontents
 
-% einleitung
-\include{project_overview.tex}
-
-\section{Materialien, Vorgehen, Methode}
-
-\subsection{Materialien}
-
-\subsection{Vorgehen und Methode}
-
-\subsection{Schwierigkeiten}
-
-kein echtes server testing, weil hardware nicht so geeignet
-AMDuProf hat nicht funktioniert, weil keine ahnung
-% https://community.amd.com/t5/server-gurus-discussions/amduprof-not-attaching-to-processes-on-linux/m-p/578286#M1589
-
-\section{Ergebnisse}
-
-\subsection{Generierung von 10 Millionen zufälligen Zahlen in Python}
-
 \clearpage
 
-\section{Ergebnisdiskussion}
+\pagestyle{plain}
 
-\subsection{Erklärung der Ergebnisse}
-
-\subsection{Beantwortung der Forschungsfrage}
-
-\section{Reflexion und Ausblick}
-
-\section{Schlusswort}
-
-\section{Gelernt}
-gdb
-b tree
-socket api linux
+\include{project_overview.tex}
 
 \clearpage
 
@@ -155,9 +134,14 @@ socket api linux
 
 \vspace{0.5cm}
 
+\cite{finland_indepth}
+\cite{indian_overview}
+
+\section{Quellenangaben}
+
 % break urls
 \emergencystretch=0.5em
 
-% \printbibliography[title={Literaturverzeichnis}]
+\printbibliography[title={Literaturverzeichnis}]
 
 \end{document}
