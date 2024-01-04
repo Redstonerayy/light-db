@@ -134,7 +134,7 @@ void Binary_Tree::rebalance(BT_Node* bt_node) {
                         imbalanced_node->right->left = imbalanced_node;
                         replace_in_parent(imbalanced_node, imbalanced_node->right, &this->root_node);
                         imbalanced_node->parent = imbalanced_node->right;
-                        imbalanced_node->left = nullptr;
+                        imbalanced_node->right = nullptr;
                     }
                     imbalanced_node->parent->balance = 0;
                     imbalanced_node->balance = 0;
@@ -190,20 +190,20 @@ int Binary_Tree::insert(void* data) {
     while (true) {
         int compare_result = compare_keys(bt_node->key, key, this->key_attribute_lengths);
         if (compare_result == 1) {
-            if (bt_node->left == nullptr) {
-                bt_node->left = new BT_Node{key, data, 0, bt_node, nullptr, nullptr};
-                this->rebalance(bt_node->left);
-                return 0;
-            } else {
-                bt_node = bt_node->left;
-            }
-        } else if (compare_result == -1) {
             if (bt_node->right == nullptr) {
                 bt_node->right = new BT_Node{key, data, 0, bt_node, nullptr, nullptr};
                 this->rebalance(bt_node->right);
                 return 0;
             } else {
                 bt_node = bt_node->right;
+            }
+        } else if (compare_result == -1) {
+            if (bt_node->left == nullptr) {
+                bt_node->left = new BT_Node{key, data, 0, bt_node, nullptr, nullptr};
+                this->rebalance(bt_node->left);
+                return 0;
+            } else {
+                bt_node = bt_node->left;
             }
         } else {
             return -1;
