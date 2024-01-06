@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include "structs.hpp"
+
 struct BT_Node {
     void* key;
     void* data;
@@ -28,16 +30,6 @@ class Binary_Tree {
     BT_Node* search_for_key(void* key);
     BT_Node* find_inorder_successor(BT_Node* node);
     void rebalance(BT_Node* bt_node);
-};
-
-enum TABLE_DATATYPE {
-    INT,             // 32 bit integer
-    LONG,            // 64 bit integer
-    CHAR_8,          // 8 bytes
-    CHAR_16,         // 16 bytes
-    CHAR_32,         // 32 bytes
-    UNIX_TIMESTAMP,  // 32 bit integer
-    DATE,            // 32 bit integer
 };
 
 class Table {

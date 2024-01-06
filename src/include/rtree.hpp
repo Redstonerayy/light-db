@@ -1,8 +1,10 @@
 #pragma once
 
-class RTree {
-public:
 
+
+class RTree2D {
+public:
+    
 private:
 
 };

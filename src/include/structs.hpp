@@ -1,6 +1,4 @@
 #pragma once
-#ifndef STRUCTS_HPP
-#define STRUCTS_HPP
 
 #include <vector>
 
@@ -10,4 +8,12 @@ struct Connection
     std::vector<char> buffered_data;
 };
 
-#endif
+enum TABLE_DATATYPE {
+    INT,             // 32 bit integer
+    LONG,            // 64 bit integer
+    CHAR_8,          // 8 bytes
+    CHAR_16,         // 16 bytes
+    CHAR_32,         // 32 bytes
+    UNIX_TIMESTAMP,  // 32 bit integer
+    DATE,            // 32 bit integer
+};
