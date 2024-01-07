@@ -6,18 +6,37 @@
 
 #include "binary_tree.hpp"
 
+void print_binary_tree_node(BT_Node* node, std::vector<int>& key_attribute_lengths) {
+    int byte_offset = 0;
+
+    for (const int& bytes : key_attribute_lengths) {
+        if (bytes <= 8) {
+            long integer;
+            if (bytes == 4) {
+                integer = *((int*)((char*)node->key + byte_offset));
+            } else if (bytes == 8) {
+                integer = *((long*)((char*)node->key + byte_offset));
+            }
+            std::cout << integer << " ";
+        } else {
+            char* begin = (char*)node->key + byte_offset;
+            for (int i = 0; i < bytes; ++i) {
+                std::cout << begin[i] << " ";
+            }
+        }
+        byte_offset += bytes;
+    }
+    std::cout << "/ " << node->balance << "\n";
+}
+
 void print_binary_tree(Binary_Tree* binary_tree, std::vector<int>& key_attribute_lengths) {
     std::queue<std::pair<BT_Node*, int>> print_q;
     print_q.push({binary_tree->root_node, 0});
 
     int last_level = -1;
-    int w = 151;
-    // int max = 10;
-    // int c = 0;
+    int w = 500;
 
     while (!print_q.empty()) {
-        // ++c;
-        // if (c > max) break;
         std::pair<BT_Node*, int> current_node = print_q.front();
         print_q.pop();
         if (!(current_node.first == nullptr)) {
@@ -37,12 +56,15 @@ void print_binary_tree(Binary_Tree* binary_tree, std::vector<int>& key_attribute
             std::cout << "LV " << current_node.second << " : ";
             last_level = current_node.second;
         }
+        
         int el_count = std::pow(2, current_node.second);
-        int offset = w / el_count;
+        int offset = (w - el_count * 10) / el_count;
 
         for (int i = 0; i < offset / 2; ++i) {
             std::cout << " ";
         }
+
+        std::cout << " ";
 
         if (current_node.first == nullptr) {
             std::cout << "--/--";
@@ -70,6 +92,8 @@ void print_binary_tree(Binary_Tree* binary_tree, std::vector<int>& key_attribute
             std::cout << "/ " << current_node.first->balance;
         }
 
+        std::cout << " ";
+        
         for (int i = 0; i < offset / 2; ++i) {
             std::cout << " ";
         }

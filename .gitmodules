@@ -1,3 +1,0 @@
-[submodule "thirdparty/CppBenchmark"]
-	path = thirdparty/CppBenchmark
-	url = git@github.com:chronoxor/CppBenchmark.git
