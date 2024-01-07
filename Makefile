@@ -32,6 +32,13 @@ debug: build
 	cp ./build/Debug/test ./run/test
 	gdb -q ./run/test -x ./src/testing/debug.gdb
 
+bench: build
+	mkdir -p ./run
+	cp ./build/Release/bench ./run/bench
+	cp ./src/bench/records.csv ./run/records.csv
+	./run/bench
+	
+
 clean:
 	rm -rf ./build
 	rm -rf ./run
