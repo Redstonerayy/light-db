@@ -3,6 +3,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <chrono>
+#include <thread>
 
 #include "structs.hpp"
 #include "binary_tree.hpp"
@@ -45,6 +47,13 @@ int main() {
         }
     }
 
-    int search = 26;
+    int search = 1000000;
+    std::cout << "search\n";
     std::cout << students->search((void*)&search) << "\n";
+
+    // find all enemies of student no 1
+
+    // find all friends of student no 2
+
+    std::this_thread::sleep_for(std::chrono::seconds(10));
 }
