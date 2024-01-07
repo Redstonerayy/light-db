@@ -2,16 +2,17 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <iostream>
 #include <numeric>
 
 #include "db_util.hpp"
 
-void print_binary_tree_node(BT_Node* node, std::vector<int>& key_attribute_lengths);
-void print_binary_tree(Binary_Tree* binary_tree, std::vector<int>& key_attribute_lengths);
+// void print_binary_tree_node(BT_Node* node, std::vector<int>& key_attribute_lengths);
+// void print_binary_tree(Binary_Tree* binary_tree, std::vector<int>& key_attribute_lengths);
 
 bool has_no_children(BT_Node* node) { return node->left == nullptr && node->right == nullptr; }
 
-bool has_two_children(BT_Node* node, int balance) { return node->left != nullptr && node->right != nullptr; }
+bool has_two_children(BT_Node* node) { return node->left != nullptr && node->right != nullptr; }
 
 void replace_in_parent(BT_Node* bt_node, BT_Node* bt_replace, BT_Node** root_node) {
     if (bt_node->parent == nullptr) {
@@ -54,7 +55,7 @@ void Binary_Tree::rebalance(BT_Node* bt_node) {
         update_parent_balance(current_node);
         if (current_node->parent->balance == -1 || current_node->parent->balance == 1) {
             current_node = current_node->parent;
-        } else if (current_node->parent->balance == 0){
+        } else if (current_node->parent->balance == 0) {
             return;
         } else if (current_node->parent->balance == -2 || current_node->parent->balance == 2) {
             BT_Node* imbalanced_node = current_node->parent;
@@ -63,7 +64,7 @@ void Binary_Tree::rebalance(BT_Node* bt_node) {
                 //     print_binary_tree_node(imbalanced_node, this->key_attribute_lengths);
                 //     print_binary_tree(this, this->key_attribute_lengths);
                 // }
-                if (has_two_children(imbalanced_node->right, imbalanced_node->balance)) {
+                if (has_two_children(imbalanced_node->right)) {
                     BT_Node* temp = imbalanced_node->right->left;
                     imbalanced_node->right->left = imbalanced_node;
                     replace_in_parent(imbalanced_node, imbalanced_node->right, &this->root_node);
@@ -94,7 +95,7 @@ void Binary_Tree::rebalance(BT_Node* bt_node) {
                 }
 
             } else if (imbalanced_node->balance == -2) {  // left-heavy
-                if (has_two_children(imbalanced_node->left, imbalanced_node->balance)) {
+                if (has_two_children(imbalanced_node->left)) {
                     BT_Node* temp = imbalanced_node->left->right;
                     imbalanced_node->left->right = imbalanced_node;
                     replace_in_parent(imbalanced_node, imbalanced_node->left, &this->root_node);
@@ -164,7 +165,10 @@ int Binary_Tree::insert(void* data) {
     }
 }
 
-void* Binary_Tree::search(void* key) { return this->search_for_key(key)->data; }
+void* Binary_Tree::search(void* key) {
+    BT_Node* ptr = this->search_for_key(key);
+    return ptr == nullptr ? nullptr : this->search_for_key(key)->data;
+}
 
 BT_Node* Binary_Tree::search_for_key(void* key) {
     if (this->root_node == nullptr) {
@@ -211,7 +215,7 @@ int Binary_Tree::remove(void* key) {
         } else {
             replace_in_parent(bt_node, nullptr, &this->root_node);
         }
-    } else if (has_two_children(bt_node, 1)) {
+    } else if (has_two_children(bt_node)) {
         BT_Node* inorder_successor = this->find_inorder_successor(bt_node);
         if (bt_node->parent == nullptr) {
             this->root_node = inorder_successor;
@@ -242,7 +246,7 @@ void* Binary_Tree::compute_key(void* data) {
     int key_offset_bytes = 0;
     for (int i = 0; i < this->key_attribute_offsets.size(); ++i) {
         memcpy(((char*)key + key_offset_bytes), ((char*)data + this->key_attribute_offsets.at(i)), this->key_attribute_lengths.at(i));
-        key_byte_length += this->key_attribute_lengths.at(i);
+        key_offset_bytes += this->key_attribute_lengths.at(i);
     }
 
     return key;

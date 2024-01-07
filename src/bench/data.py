@@ -1,7 +1,7 @@
 import random, string, csv
 
-record_count = 100
-association_count = 5
+record_count = 100000
+association_count = int(record_count * 0.05)
 letters = string.ascii_lowercase
 
 def make_row(i) -> list:

@@ -58,13 +58,11 @@ void print_binary_tree(Binary_Tree* binary_tree, std::vector<int>& key_attribute
         }
         
         int el_count = std::pow(2, current_node.second);
-        int offset = (w - el_count * 10) / el_count;
+        int offset = w / el_count;
 
         for (int i = 0; i < offset / 2; ++i) {
             std::cout << " ";
         }
-
-        std::cout << " ";
 
         if (current_node.first == nullptr) {
             std::cout << "--/--";
@@ -91,8 +89,6 @@ void print_binary_tree(Binary_Tree* binary_tree, std::vector<int>& key_attribute
             }
             std::cout << "/ " << current_node.first->balance;
         }
-
-        std::cout << " ";
         
         for (int i = 0; i < offset / 2; ++i) {
             std::cout << " ";
