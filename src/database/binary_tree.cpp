@@ -230,13 +230,11 @@ std::vector<void*> Binary_Tree::search_between_keys(void* key_left, void* key_ri
     if (leftmost_in_range == rightmost_in_range) {
         int left_compare = compare_keys(key_left, leftmost_in_range->key, this->key_attribute_lengths);
         int right_compare = compare_keys(key_right, rightmost_in_range->key, this->key_attribute_lengths);
-        if ((left_compare == -1 || left_compare == 0) && (right_compare == -1 || right_compare == 0)) {
+        if ((left_compare == 1 || left_compare == 0) && (right_compare == -1 || right_compare == 0)) {
             return {leftmost_in_range->data};
         }
     }
 
-    // traverse tree
-    int go_right = 0;
     std::vector<void*> data_ptrs;
     BT_Node* current = leftmost_in_range;
     while (true) {
@@ -254,13 +252,13 @@ std::vector<void*> Binary_Tree::search_between_keys(void* key_left, void* key_ri
                 } else {
                     node = s.top();
                     s.pop();
-                    data_ptrs.emplace_back(current->data);
-                    if(node == rightmost_in_range) return data_ptrs;
+                    data_ptrs.emplace_back(node->data);
+                    if (node == rightmost_in_range) return data_ptrs;
                     node = node->right;
                 }
             }
         }
-        
+
         // find next node
         BT_Node* previous_node = current;
         current = current->parent;
