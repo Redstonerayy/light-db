@@ -39,13 +39,13 @@ int main() {
             *((int*)data) = friendship.first;
             *((int*)data + 1) = friendship.second;
             int insert_status = friendships->insert(data);
-            // std::cout << friendship.first << ":" << friendship.second << "//";
+            std::cout << friendship.first << ":" << friendship.second << "//\n";
             if(row.id == 2){
                 void* key_eleven = malloc(sizeof(int) * 2);
                 *((int*)key_eleven) = 2;
                 *((int*)key_eleven + 1) = 11;
-                std::cout << friendships->search(key_eleven) << "\n";
-                print_binary_tree(friendships->binary_tree, friendships->binary_tree->key_attribute_lengths);
+                std::cout << friendship.second << "-" << friendships->search(key_eleven) << "\n";
+                // print_binary_tree(friendships->binary_tree, friendships->binary_tree->key_attribute_lengths);
             }
             // std::cout << friendship.first << ":" << friendship.second << ":" << insert_status << "\n";
         }

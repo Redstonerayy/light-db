@@ -102,8 +102,10 @@ void Binary_Tree::rebalance(BT_Node* bt_node) {
                         std::cout << "left_right\n";
                         imbalanced_node->left->right->left = imbalanced_node->left;
                         imbalanced_node->left->right->right = imbalanced_node;
-
+                        
+                        std::cout << imbalanced_node->parent << "prb\n";
                         replace_in_parent(imbalanced_node, imbalanced_node->left->right, &this->root_node);
+                        std::cout << imbalanced_node->parent << "pra\n";
 
                         imbalanced_node->parent = imbalanced_node->left->right;
                         imbalanced_node->left = nullptr;
