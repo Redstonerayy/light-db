@@ -8,9 +8,6 @@
 
 #include "db_util.hpp"
 
-// void print_binary_tree_node(BT_Node* node, std::vector<int>& key_attribute_lengths);
-// void print_binary_tree(Binary_Tree* binary_tree, std::vector<int>& key_attribute_lengths);
-
 bool has_no_children(BT_Node* node) { return node->left == nullptr && node->right == nullptr; }
 
 bool has_two_children(BT_Node* node) { return node->left != nullptr && node->right != nullptr; }
@@ -61,10 +58,6 @@ void Binary_Tree::rebalance(BT_Node* bt_node) {
         } else if (current_node->parent->balance == -2 || current_node->parent->balance == 2) {
             BT_Node* imbalanced_node = current_node->parent;
             if (imbalanced_node->balance == 2) {  // right-heavy
-                // if(imbalanced_node->right == nullptr){
-                //     print_binary_tree_node(imbalanced_node, this->key_attribute_lengths);
-                //     print_binary_tree(this, this->key_attribute_lengths);
-                // }
                 if (has_two_children(imbalanced_node->right)) {
                     BT_Node* temp = imbalanced_node->right->left;
                     imbalanced_node->right->left = imbalanced_node;
@@ -106,6 +99,7 @@ void Binary_Tree::rebalance(BT_Node* bt_node) {
                     imbalanced_node->balance = 0;
                 } else {
                     if (apply_left_right_rotation(imbalanced_node)) {
+                        std::cout << "left_right\n";
                         imbalanced_node->left->right->left = imbalanced_node->left;
                         imbalanced_node->left->right->right = imbalanced_node;
 
@@ -168,6 +162,7 @@ int Binary_Tree::insert(void* data) {
 
 void* Binary_Tree::search(void* key) {
     BT_Node* ptr = this->search_for_key(key);
+    std::cout << ptr << "\n";
     return ptr == nullptr ? nullptr : this->search_for_key(key)->data;
 }
 
@@ -277,6 +272,7 @@ BT_Node* Binary_Tree::search_for_key(void* key) {
     BT_Node* bt_node = this->root_node;
 
     while (true) {
+        std::cout << *((int*)bt_node->key) << "-" << *((int*)bt_node->key + 1) << "|\n";
         int compare_result = compare_keys(bt_node->key, key, this->key_attribute_lengths);
         if (compare_result == -1) {
             if (bt_node->left == nullptr) {

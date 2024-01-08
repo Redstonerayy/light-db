@@ -4,8 +4,8 @@ random.seed(1)
 
 # record_count = 100000
 # association_count = 100
-record_count = 10
-association_count = 5
+record_count = 50
+association_count = 10
 letters = string.ascii_lowercase
 
 def make_row(i) -> list:

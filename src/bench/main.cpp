@@ -38,7 +38,16 @@ int main() {
             void* data = malloc(sizeof(int) * 2);
             *((int*)data) = friendship.first;
             *((int*)data + 1) = friendship.second;
-            std::cout << friendship.first << ":" << friendship.second << ":" << friendships->insert(data) << ",";
+            int insert_status = friendships->insert(data);
+            // std::cout << friendship.first << ":" << friendship.second << "//";
+            if(row.id == 2){
+                void* key_eleven = malloc(sizeof(int) * 2);
+                *((int*)key_eleven) = 2;
+                *((int*)key_eleven + 1) = 11;
+                std::cout << friendships->search(key_eleven) << "\n";
+                print_binary_tree(friendships->binary_tree, friendships->binary_tree->key_attribute_lengths);
+            }
+            // std::cout << friendship.first << ":" << friendship.second << ":" << insert_status << "\n";
         }
 
         for (const auto hostility : row.hostilities) {
@@ -47,12 +56,13 @@ int main() {
             *((int*)data + 1) = hostility.second;
             hostilities->insert(data);
         }
+        // std::cout << "---xxx---\n";
     }
 
     std::cout << "TREES\n";
-    print_binary_tree(students->binary_tree, students->binary_tree->key_attribute_lengths);
-    print_binary_tree(friendships->binary_tree, friendships->binary_tree->key_attribute_lengths);
-    print_binary_tree(hostilities->binary_tree, hostilities->binary_tree->key_attribute_lengths);
+    // print_binary_tree(students->binary_tree, students->binary_tree->key_attribute_lengths);
+    // print_binary_tree(friendships->binary_tree, friendships->binary_tree->key_attribute_lengths);
+    // print_binary_tree(hostilities->binary_tree, hostilities->binary_tree->key_attribute_lengths);
 
     // find all friends of student no 2
     void* key_left = malloc(sizeof(int) * 2);
@@ -62,10 +72,13 @@ int main() {
     *((int*)key_right) = 2;
     *((int*)key_right + 1) = std::numeric_limits<int>::max();
     std::vector<void*> friendship_ptrs = friendships->binary_tree->search_between_keys(key_left, key_right);
+    std::cout << friendship_ptrs.size() << "\n";
     for(const void* ptr : friendship_ptrs){
         printf("%d %d\n", *((int*)ptr), *((int*)ptr + 1));
     }
     // find all enemies of student no 1
+
+
 
     // std::this_thread::sleep_for(std::chrono::seconds(10));
 }

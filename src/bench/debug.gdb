@@ -1,7 +1,10 @@
-break binary_tree.cpp:247
-break binary_tree.cpp:248
-break binary_tree.cpp:249
-break printing.cpp:33
-break printing.cpp:81
+break binary_tree.cpp:102
+break binary_tree.cpp:106
+break binary_tree.cpp:111
+break binary_tree.cpp:112
+break binary_tree.cpp:111
+break binary_tree.cpp:16
+break binary_tree.cpp:20
+break binary_tree.cpp:27
 start
 continue
