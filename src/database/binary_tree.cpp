@@ -4,6 +4,7 @@
 #include <cstring>
 #include <iostream>
 #include <numeric>
+#include <stack>
 
 #include "db_util.hpp"
 
@@ -168,6 +169,106 @@ int Binary_Tree::insert(void* data) {
 void* Binary_Tree::search(void* key) {
     BT_Node* ptr = this->search_for_key(key);
     return ptr == nullptr ? nullptr : this->search_for_key(key)->data;
+}
+
+std::vector<void*> Binary_Tree::search_between_keys(void* key_left, void* key_right) {
+    if (this->root_node == nullptr) {
+        return {};
+    }
+
+    BT_Node* leftmost_in_range = this->root_node;
+    BT_Node* current_node_l = this->root_node;
+
+    while (true) {
+        int compare_result = compare_keys(current_node_l->key, key_left, this->key_attribute_lengths);
+        if (compare_result == -1) {
+            if (current_node_l->left == nullptr) {
+                leftmost_in_range = current_node_l;
+                break;
+            } else {
+                leftmost_in_range = current_node_l;
+                current_node_l = current_node_l->left;
+            }
+        } else if (compare_result == 1) {
+            if (current_node_l->right == nullptr) {
+                break;
+            } else {
+                current_node_l = current_node_l->right;
+            }
+        } else {
+            break;
+        }
+    }
+
+    BT_Node* rightmost_in_range = this->root_node;
+    BT_Node* current_node_r = this->root_node;
+
+    while (true) {
+        int compare_result = compare_keys(current_node_r->key, key_right, this->key_attribute_lengths);
+        if (compare_result == -1) {
+            if (current_node_r->left == nullptr) {
+                break;
+            } else {
+                current_node_r = current_node_r->left;
+            }
+        } else if (compare_result == 1) {
+            if (current_node_r->right == nullptr) {
+                rightmost_in_range = current_node_r;
+                break;
+            } else {
+                rightmost_in_range = current_node_r;
+                current_node_r = current_node_r->right;
+            }
+        } else {
+            break;
+        }
+    }
+
+    std::cout << *((int*)leftmost_in_range->key) << "-" << *((int*)leftmost_in_range->key + 1) << "|\n";
+    std::cout << *((int*)rightmost_in_range->key) << "-" << *((int*)rightmost_in_range->key + 1) << "|\n";
+
+    if (leftmost_in_range == rightmost_in_range) {
+        int left_compare = compare_keys(key_left, leftmost_in_range->key, this->key_attribute_lengths);
+        int right_compare = compare_keys(key_right, rightmost_in_range->key, this->key_attribute_lengths);
+        if ((left_compare == -1 || left_compare == 0) && (right_compare == -1 || right_compare == 0)) {
+            return {leftmost_in_range->data};
+        }
+    }
+
+    // traverse tree
+    int go_right = 0;
+    std::vector<void*> data_ptrs;
+    BT_Node* current = leftmost_in_range;
+    while (true) {
+        data_ptrs.emplace_back(current->data);
+        if (current == rightmost_in_range) return data_ptrs;
+
+        if (current->right != nullptr) {
+            // traverse right subtree until rightmost found (or not)
+            std::stack<BT_Node*> s;
+            BT_Node* node = current->right;
+            while (!s.empty() || node != nullptr) {
+                if (node != nullptr) {
+                    s.push(node);
+                    node = node->left;
+                } else {
+                    node = s.top();
+                    s.pop();
+                    data_ptrs.emplace_back(current->data);
+                    if(node == rightmost_in_range) return data_ptrs;
+                    node = node->right;
+                }
+            }
+        }
+        
+        // find next node
+        BT_Node* previous_node = current;
+        current = current->parent;
+        while (current->right == previous_node) {
+            previous_node = current;
+            current = current->parent;
+        }
+    }
 }
 
 BT_Node* Binary_Tree::search_for_key(void* key) {

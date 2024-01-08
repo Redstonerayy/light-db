@@ -1,6 +1,6 @@
 #include <cmath>
+#include <deque>
 #include <iostream>
-#include <queue>
 #include <utility>
 #include <vector>
 
@@ -30,33 +30,46 @@ void print_binary_tree_node(BT_Node* node, std::vector<int>& key_attribute_lengt
 }
 
 void print_binary_tree(Binary_Tree* binary_tree, std::vector<int>& key_attribute_lengths) {
-    std::queue<std::pair<BT_Node*, int>> print_q;
-    print_q.push({binary_tree->root_node, 0});
+    std::deque<std::pair<BT_Node*, int>> print_q;
+    print_q.push_back({binary_tree->root_node, 0});
 
     int last_level = -1;
-    int w = 500;
+    int w = 1000;
 
     while (!print_q.empty()) {
         std::pair<BT_Node*, int> current_node = print_q.front();
-        print_q.pop();
-        if (!(current_node.first == nullptr)) {
+        print_q.pop_front();
+
+        if (current_node.first == nullptr) {
+            print_q.push_back({nullptr, current_node.second + 1});
+            print_q.push_back({nullptr, current_node.second + 1});
+        } else {
             if (current_node.first->left != nullptr) {
-                print_q.push({current_node.first->left, current_node.second + 1});
+                print_q.push_back({current_node.first->left, current_node.second + 1});
             } else {
-                print_q.push({nullptr, current_node.second + 1});
+                print_q.push_back({nullptr, current_node.second + 1});
             }
             if (current_node.first->right != nullptr) {
-                print_q.push({current_node.first->right, current_node.second + 1});
+                print_q.push_back({current_node.first->right, current_node.second + 1});
             } else {
-                print_q.push({nullptr, current_node.second + 1});
+                print_q.push_back({nullptr, current_node.second + 1});
             }
         }
+
         if (last_level < current_node.second) {
+            bool exit = true;
+            for (const auto& p : print_q) {
+                if (p.first != nullptr) exit = false;
+            }
+            if (exit) {
+                std::cout << "\n------------------------------------------------------------------------------------------------------------------------\n";
+                return;
+            }
             std::cout << "\n";
             std::cout << "LV " << current_node.second << " : ";
             last_level = current_node.second;
         }
-        
+
         int el_count = std::pow(2, current_node.second);
         int offset = w / el_count;
 
@@ -89,7 +102,7 @@ void print_binary_tree(Binary_Tree* binary_tree, std::vector<int>& key_attribute
             }
             std::cout << "/ " << current_node.first->balance;
         }
-        
+
         for (int i = 0; i < offset / 2; ++i) {
             std::cout << " ";
         }

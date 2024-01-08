@@ -23,6 +23,7 @@ class Binary_Tree {
     Binary_Tree(std::vector<int> key_attribute_offsets, std::vector<int> key_attribute_lengths);
     int insert(void* data);
     void* search(void* key);
+    std::vector<void*> search_between_keys(void* key_left, void* key_right);
     int remove(void* key);
 
    private:

@@ -3,17 +3,19 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <chrono>
-#include <thread>
+// #include <chrono>
+// #include <thread>
+#include <cstdio>
+#include <limits>
 
 #include "structs.hpp"
 #include "binary_tree.hpp"
-#include "graphdb.hpp"
+// #include "graphdb.hpp"
 #include "header.hpp"
 
 std::vector<Row> read_csv(std::string filepath);
-// void print_binary_tree_node(BT_Node* node, std::vector<int>& key_attribute_lengths);
-// void print_binary_tree(Binary_Tree* binary_tree, std::vector<int>& key_attribute_lengths);
+void print_binary_tree_node(BT_Node* node, std::vector<int>& key_attribute_lengths);
+void print_binary_tree(Binary_Tree* binary_tree, std::vector<int>& key_attribute_lengths);
 
 int main() {
     Table* students;
@@ -36,24 +38,34 @@ int main() {
             void* data = malloc(sizeof(int) * 2);
             *((int*)data) = friendship.first;
             *((int*)data + 1) = friendship.second;
-            friendships->insert(data);
+            std::cout << friendship.first << ":" << friendship.second << ":" << friendships->insert(data) << ",";
         }
 
         for (const auto hostility : row.hostilities) {
             void* data = malloc(sizeof(int) * 2);
             *((int*)data) = hostility.first;
             *((int*)data + 1) = hostility.second;
-            friendships->insert(data);
+            hostilities->insert(data);
         }
     }
 
-    int search = 1000000;
-    std::cout << "search\n";
-    std::cout << students->search((void*)&search) << "\n";
-
-    // find all enemies of student no 1
+    std::cout << "TREES\n";
+    print_binary_tree(students->binary_tree, students->binary_tree->key_attribute_lengths);
+    print_binary_tree(friendships->binary_tree, friendships->binary_tree->key_attribute_lengths);
+    print_binary_tree(hostilities->binary_tree, hostilities->binary_tree->key_attribute_lengths);
 
     // find all friends of student no 2
+    void* key_left = malloc(sizeof(int) * 2);
+    *((int*)key_left) = 2;
+    *((int*)key_left + 1) = 0;
+    void* key_right = malloc(sizeof(int) * 2);
+    *((int*)key_right) = 2;
+    *((int*)key_right + 1) = std::numeric_limits<int>::max();
+    std::vector<void*> friendship_ptrs = friendships->binary_tree->search_between_keys(key_left, key_right);
+    for(const void* ptr : friendship_ptrs){
+        printf("%d %d\n", *((int*)ptr), *((int*)ptr + 1));
+    }
+    // find all enemies of student no 1
 
-    std::this_thread::sleep_for(std::chrono::seconds(10));
+    // std::this_thread::sleep_for(std::chrono::seconds(10));
 }

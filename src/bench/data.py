@@ -2,8 +2,10 @@ import random, string, csv
 
 random.seed(1)
 
-record_count = 100000
-association_count = 100
+# record_count = 100000
+# association_count = 100
+record_count = 10
+association_count = 5
 letters = string.ascii_lowercase
 
 def make_row(i) -> list:

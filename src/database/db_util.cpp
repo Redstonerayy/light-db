@@ -22,8 +22,11 @@ int get_byte_size(TABLE_DATATYPE type) {
 }
 
 int compare_keys(void* key_l, void* key_r, std::vector<int>& key_attribute_lengths) {
+    int key_parts = key_attribute_lengths.size();
+    int key_part = 0;
     int byte_offset = 0;
     for (const int& bytes : key_attribute_lengths) {
+        ++key_part;
         if (bytes <= 8) {
             long left;
             long right;
@@ -39,7 +42,7 @@ int compare_keys(void* key_l, void* key_r, std::vector<int>& key_attribute_lengt
             } else if (left < right) {
                 return 1;
             } else {
-                return 0;
+                if (key_part >= key_parts) return 0;
             }
         } else {
             char* left_begin = (char*)key_l + byte_offset;

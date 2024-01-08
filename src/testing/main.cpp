@@ -1,7 +1,8 @@
-#include <iostream>
+// #include <iostream>
 #include <cstdlib>
 #include <vector>
 
+#include "structs.hpp"
 #include "binary_tree.hpp"
 
 void print_binary_tree(Binary_Tree* binary_tree, std::vector<int>& key_attribute_lengths);
