@@ -16,7 +16,7 @@ void Graph::add_node(void* node_data, int node_schema){
     this->nodes.emplace_back(new_node);
 }
 
-std::vector<Link> query_links(Node* node, int link_schema){
+std::vector<Link> Graph::query_links(Node* node, int link_schema){
     std::vector<Link> matching_links;
     for(const auto link : node->links){
         if (link.link_schema == link_schema){
@@ -24,4 +24,9 @@ std::vector<Link> query_links(Node* node, int link_schema){
         }
     }
     return matching_links;
+}
+
+void Graph::add_link(Node* origin, Node* target, void* link_data, int link_schema){
+    if(link_schema == -1) link_data = nullptr;
+    origin->links.emplace_back(Link{target, link_data, link_schema});
 }

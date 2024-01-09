@@ -31,7 +31,8 @@ class Graph {
     void new_link_schema(std::vector<TABLE_DATATYPE> schema);
 
     void add_node(void* node_data, int node_schema);
-    void query_links(Node* node, int link_schema = -1);
+    void add_link(Node* origin, Node* target, void* link_data, int link_schema);
+    std::vector<Link> query_links(Node* node, int link_schema);
 
    private:
 };
