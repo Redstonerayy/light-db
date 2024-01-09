@@ -102,7 +102,7 @@ void Binary_Tree::rebalance(BT_Node* bt_node) {
                         std::cout << "left_right\n";
                         imbalanced_node->left->right->left = imbalanced_node->left;
                         imbalanced_node->left->right->right = imbalanced_node;
-                        
+
                         std::cout << imbalanced_node->parent << "prb\n";
                         replace_in_parent(imbalanced_node, imbalanced_node->left->right, &this->root_node);
                         std::cout << imbalanced_node->parent << "pra\n";
@@ -193,6 +193,7 @@ std::vector<void*> Binary_Tree::search_between_keys(void* key_left, void* key_ri
                 current_node_l = current_node_l->right;
             }
         } else {
+            leftmost_in_range = current_node_l;
             break;
         }
     }
@@ -201,6 +202,9 @@ std::vector<void*> Binary_Tree::search_between_keys(void* key_left, void* key_ri
     BT_Node* current_node_r = this->root_node;
 
     while (true) {
+        if(*((int*)key_left) == 0){
+            std::cout << *((int*)current_node_r->key) << "-" << *((int*)current_node_r->key + 1) << "|||\n";
+        }
         int compare_result = compare_keys(current_node_r->key, key_right, this->key_attribute_lengths);
         if (compare_result == -1) {
             if (current_node_r->left == nullptr) {
@@ -217,6 +221,7 @@ std::vector<void*> Binary_Tree::search_between_keys(void* key_left, void* key_ri
                 current_node_r = current_node_r->right;
             }
         } else {
+            rightmost_in_range = current_node_r;
             break;
         }
     }

@@ -35,16 +35,16 @@ int main() {
         students->insert(data);
 
         for (const auto friendship : row.friendships) {
+            std::cout << friendship.first << ":" << friendship.second << "//\n";
             void* data = malloc(sizeof(int) * 2);
             *((int*)data) = friendship.first;
             *((int*)data + 1) = friendship.second;
             int insert_status = friendships->insert(data);
-            std::cout << friendship.first << ":" << friendship.second << "//\n";
-            if(row.id == 2){
-                void* key_eleven = malloc(sizeof(int) * 2);
-                *((int*)key_eleven) = 2;
-                *((int*)key_eleven + 1) = 11;
-                std::cout << friendship.second << "-" << friendships->search(key_eleven) << "\n";
+            if(row.id == 0){
+                // void* key_eleven = malloc(sizeof(int) * 2);
+                // *((int*)key_eleven) = 2;
+                // *((int*)key_eleven + 1) = 11;
+                // std::cout << friendship.second << "-" << friendships->search(key_eleven) << "\n";
                 // print_binary_tree(friendships->binary_tree, friendships->binary_tree->key_attribute_lengths);
             }
             // std::cout << friendship.first << ":" << friendship.second << ":" << insert_status << "\n";
@@ -66,10 +66,10 @@ int main() {
 
     // find all friends of student no 2
     void* key_left = malloc(sizeof(int) * 2);
-    *((int*)key_left) = 2;
+    *((int*)key_left) = 0;
     *((int*)key_left + 1) = 0;
     void* key_right = malloc(sizeof(int) * 2);
-    *((int*)key_right) = 2;
+    *((int*)key_right) = 1;
     *((int*)key_right + 1) = std::numeric_limits<int>::max();
     std::vector<void*> friendship_ptrs = friendships->binary_tree->search_between_keys(key_left, key_right);
     std::cout << friendship_ptrs.size() << "\n";
