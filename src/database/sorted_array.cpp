@@ -25,10 +25,10 @@ int Sorted_Array::insert(void* data) {
     if (res.status == 1) {
         return -1;
     } else {
+        SA_ELEMENT new_el = SA_ELEMENT{key, data};
         if (compare_keys(this->elements.at(res.index).key, key, this->key_attribute_lengths) == 1) {
-            this->elements.emplace_back(SA_ELEMENT{key, data});
+            this->elements.insert(this->elements.begin() + res.index + 1, new_el);
         } else {
-            SA_ELEMENT new_el = SA_ELEMENT{key, data};
             this->elements.insert(this->elements.begin() + res.index, new_el);
         }
         return 0;
@@ -51,8 +51,8 @@ std::vector<void*> Sorted_Array::search_between_keys(void* key_left, void* key_r
     int left_start = res_l.index;
     int right_start = res_r.index;
 
-    if (res_l.status == 0) ++left_start;
-    if (res_r.status == 0) --right_start;
+    if (res_l.status == 0 && compare_keys(this->elements.at(res_l.index).key, key_left, this->key_attribute_lengths) == 1) ++left_start;
+    if (res_r.status == 0 && compare_keys(this->elements.at(res_r.index).key, key_right, this->key_attribute_lengths) == -1) --right_start;
 
     std::vector<void*> data_ptrs;
     for(int i = left_start; i < right_start + 1; ++i){
