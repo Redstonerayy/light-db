@@ -32,6 +32,12 @@
 % colors
 \usepackage{xcolor}
 
+% spacing between section titles and text
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{0.7ex}{0.7ex}
+\titlespacing*{\subsection}{0pt}{0.7ex}{0.7ex}
+\titlespacing*{\subsubsection}{0pt}{0.7ex}{0.7ex}
+
 % for urls
 % break urls on line end
 \usepackage[breaklinks, colorlinks=true, urlcolor=blue, citecolor=blue, linkcolor=black]{hyperref}
@@ -74,35 +80,42 @@
 % remove ToC page number
 \AtBeginDocument{\addtocontents{toc}{\protect\thispagestyle{empty}}} 
 
+% bold caption
+\usepackage[labelfont=bf]{caption}
+
 % document
 \begin{document}
 
 % deckblatt
 % title
-\title{Datenbanken und Daten - \\ Das muss passen wie Schlüssel und Schloss}
+\title{Schwierigkeiten bei Implementierung und Evaluation von Datenstrukturen in Datenbanksystemen}
 \author{Anton Rodenwald (19)}
 \maketitle
 
 % page settings
-\addtocounter{page}{-4}
+\addtocounter{page}{-3}
 \thispagestyle{empty}
 
 \large
 \begin{tabular}{l p{12cm}}
 
-    Fachgebiet:          & Mathematik/Informatik   \\
+    Fachgebiet:          & Mathematik/Informatik                                            \\
 
-    Wettbewerbssparte:   & Jugend Forscht          \\
+    Wettbewerbssparte:   & Jugend Forscht                                                   \\
 
-    Bundesland:          & Niedersachsen           \\
+    Bundesland:          & Niedersachsen                                                    \\
 
-    Wettbewerbsjahr:     & 2024                    \\
+    Wettbewerbsjahr:     & 2024                                                             \\
 
-    Thema des Projektes: & <Text>                  \\
+    Thema des Projektes: &
+    In meinem Projekt wollte ich verschiedene in Datenbanksystemen genutzte Datenstrukturen
+    implementieren und testen. Dabei betrachtete ich auch unterschiedliche Ansätze der
+    Datenspeicherung und für den Datenzugriff. Da einige Schwierigkeiten auftraten,
+    werde ich auch mögliche Stolpersteine und Lösungen erläutern. \\
+ 
+    Projektbetreuerin:   & Birgit Ziegenmeyer                                               \\
 
-    Projektbetreuerin:   & Birgit Ziegenmeyer      \\
-
-    Institution:         & Schillerschule Hannover \\
+    Institution:         & Schillerschule Hannover                                          \\
 \end{tabular}
 
 \clearpage
@@ -129,7 +142,66 @@
 
 \pagestyle{plain}
 
-\include{project_overview.tex}
+\section{Motivation, Fragestellung und Ziel}
+
+Im Rahmen des Informatik Leistungkurses meiner Schule haben wir (Mitschüler und ich) uns
+mit Datenbanken und Modellierung beschäftigt. Da jedoch auf die Funktionsweise einer
+Datenbank nicht weiter eingegangen wurde und ich auch schon von Unterschiedlichen
+Datenbankansätzen, genauer Relationalen und Nicht-Relationalen, gehört hatte,
+wollte ich mich ihm Rahmen meines Projektes genauer damit beschäftigen.
+Dazu wollte ich eine einfache Datenbank umsetzen.\newline
+
+Meine Forschungsfrage ist deshalb, wie die Wahl der Datenstruktur die
+Geschwindigkeit einer Datenbank beeinflusst und inwiefern sich eine Datenstruktur
+für gewisse Daten besser oder schlechter eignet.\newline
+
+Mein Ursprüngliches Ziel war dabei die Programmierung einer Datenbank
+mit den Datenstrukturen R-Tree, B-Tree, Binary-Tree und Graphen.
+Davon konnte ich leider aufgrund der hohen Komplexität vieles nicht umsetzen.
+
+\section{Hintergrund}
+
+\subsection{Arten von Daten}
+
+\subsection{Betrachtete Datenstrukturen}
+
+r-tree (spatial data)
+b-tree
+indices (normal tables)
+graphs (search algos)
+
+\subsection{Arten von Datenbanksystemen}
+
+\section{Vorgehensweise}
+
+% implementaton -> networking
+\subsection{implementation -> welche algorithmen}
+
+\section{schwierigkeiten/limitationen}
+
+kein echtes server testing, weil hardware nicht so geeignet
+AMDuProf hat nicht funktioniert, weil keine ahnung
+% https://community.amd.com/t5/server-gurus-discussions/amduprof-not-attaching-to-processes-on-linux/m-p/578286#M1589
+
+\section{messwerte}
+\section{Ergebnisse}
+
+\section{empfehlung von datenbanken -> einfach regeln}
+
+\subsection{Beantwortung der Forschungsfrage}
+
+\section{Gelernt}
+gdb
+b tree
+socket api linux
+
+\section{fazit}
+
+\section{ausblick interessen geweckt}
+
+% Quellen
+% bjnet
+% 
 
 \clearpage
 
@@ -147,38 +219,125 @@
     \bcxlabel{\bf{Ausführungszeit in Sekunden}}
 \end{bchart}
 
+\clearpage
+
 \begin{figure}[H]
     \centering
-    \begin{adjustwidth*}{}{-1.2cm}
-        \begin{tikzpicture}[scale=1]
-            \begin{axis}[
-                    x label style={at={(axis description cs:0.5,-0.01)},anchor=north},
-                    y label style={at={(axis description cs:-0.01,0.5)},anchor=south},
-                    xlabel=Nummer der Messung,
-                    ylabel=Zeit in Nanosekunden,
-                    width=1.1\textwidth,
-                    height=1.6\textwidth,
-                ]
-                \addplot table [y=$SA_F$, x=NR]{./res/data.dat};
-                \addlegendentry{$SA_F$ series}
-                \addplot table [y=$SA_H$, x=NR]{./res/data.dat};
-                \addlegendentry{$SA_H$ series}
-                \addplot table [y=$G_F$, x=NR]{./res/data.dat};
-                \addlegendentry{$G_F$ series}
-                \addplot table [y=$G_H$, x=NR]{./res/data.dat};
-                \addlegendentry{$G_H$ series}
-            \end{axis}
-        \end{tikzpicture}
-    \end{adjustwidth*}
+    \begin{tikzpicture}[scale=1]
+        \begin{axis}[
+                x label style={at={(axis description cs:0.5,-0.01)},anchor=north},
+                y label style={at={(axis description cs:-0.01,0.5)},anchor=south},
+                xlabel=\textbf{Nummer der Messung},
+                ylabel=\textbf{Zeit in Nanosekunden},
+                width=1.0\textwidth,
+                height=0.7\textwidth,
+            ]
+            \addplot table [y=$SA_F$, x=NR]{./res/data_pc_1.dat};
+            \addlegendentry{$SA_F$ series}
+            \addplot table [y=$SA_H$, x=NR]{./res/data_pc_1.dat};
+            \addlegendentry{$SA_H$ series}
+            \addplot table [y=$G_F$, x=NR]{./res/data_pc_1.dat};
+            \addlegendentry{$G_F$ series}
+            \addplot table [y=$G_H$, x=NR]{./res/data_pc_1.dat};
+            \addlegendentry{$G_H$ series}
+        \end{axis}
+    \end{tikzpicture}
+    \vspace*{-0.8cm}
+    \caption{\textbf{1. Messreihe am PC (Ryzen 7 2700)}}
 \end{figure}
 
-\cite{finland_indepth}
-\cite{indian_overview}
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[scale=1]
+        \begin{axis}[
+                x label style={at={(axis description cs:0.5,-0.01)},anchor=north},
+                y label style={at={(axis description cs:-0.01,0.5)},anchor=south},
+                xlabel=\textbf{Nummer der Messung},
+                ylabel=\textbf{Zeit in Nanosekunden},
+                width=1.0\textwidth,
+                height=0.7\textwidth,
+            ]
+            \addplot table [y=$SA_F$, x=NR]{./res/data_pc_2.dat};
+            \addlegendentry{$SA_F$ series}
+            \addplot table [y=$SA_H$, x=NR]{./res/data_pc_2.dat};
+            \addlegendentry{$SA_H$ series}
+            \addplot table [y=$G_F$, x=NR]{./res/data_pc_2.dat};
+            \addlegendentry{$G_F$ series}
+            \addplot table [y=$G_H$, x=NR]{./res/data_pc_2.dat};
+            \addlegendentry{$G_H$ series}
+        \end{axis}
+    \end{tikzpicture}
+    \vspace*{-0.8cm}
+    \caption{\textbf{2. Messreihe am PC (Ryzen 7 2700)}}
+\end{figure}
 
-\section{Quellenangaben}
+\clearpage
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[scale=1]
+        \begin{axis}[
+                x label style={at={(axis description cs:0.5,-0.01)},anchor=north},
+                y label style={at={(axis description cs:-0.01,0.5)},anchor=south},
+                xlabel=\textbf{Nummer der Messung},
+                ylabel=\textbf{Zeit in Nanosekunden},
+                scaled ticks=false,
+                width=1.0\textwidth,
+                height=0.7\textwidth,
+            ]
+            \addplot table [y=$SA_F$, x=NR]{./res/data_laptop_1.dat};
+            \addlegendentry{$SA_F$ series}
+            \addplot table [y=$SA_H$, x=NR]{./res/data_laptop_1.dat};
+            \addlegendentry{$SA_H$ series}
+            \addplot table [y=$G_F$, x=NR]{./res/data_laptop_1.dat};
+            \addlegendentry{$G_F$ series}
+            \addplot table [y=$G_H$, x=NR]{./res/data_laptop_1.dat};
+            \addlegendentry{$G_H$ series}
+        \end{axis}
+    \end{tikzpicture}
+    \vspace*{-0.8cm}
+    \caption{\textbf{1. Messreihe am Laptop (Ryzen 5 5500U)}}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[scale=1]
+        \begin{axis}[
+                x label style={at={(axis description cs:0.5,-0.01)},anchor=north},
+                y label style={at={(axis description cs:-0.01,0.5)},anchor=south},
+                xlabel=\textbf{Nummer der Messung},
+                ylabel=\textbf{Zeit in Nanosekunden},
+                scaled ticks=false,
+                width=1.0\textwidth,
+                height=0.7\textwidth,
+            ]
+            \addplot table [y=$SA_F$, x=NR]{./res/data_laptop_2.dat};
+            \addlegendentry{$SA_F$ series}
+            \addplot table [y=$SA_H$, x=NR]{./res/data_laptop_2.dat};
+            \addlegendentry{$SA_H$ series}
+            \addplot table [y=$G_F$, x=NR]{./res/data_laptop_2.dat};
+            \addlegendentry{$G_F$ series}
+            \addplot table [y=$G_H$, x=NR]{./res/data_laptop_2.dat};
+            \addlegendentry{$G_H$ series}
+        \end{axis}
+    \end{tikzpicture}
+    \vspace*{-0.8cm}
+    \caption{\textbf{2. Messreihe am Laptop (Ryzen 5 5500U)}}
+\end{figure}
+
+\clearpage
+
+\cite{boeing_engineers}
+\cite{indian_overview}
+\cite{sql_ideas}
+\cite{avl_tree_wikipedia}
 
 % break urls
 \emergencystretch=0.5em
+
+\section{Quellenangaben}
+
+\url{https://beej.us/guide/bgnet/html/}
 
 \printbibliography[title={Literaturverzeichnis}]
 
