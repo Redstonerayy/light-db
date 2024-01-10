@@ -110,8 +110,8 @@
     Thema des Projektes: &
     In meinem Projekt wollte ich verschiedene in Datenbanksystemen genutzte Datenstrukturen
     implementieren und testen. Dabei betrachtete ich auch unterschiedliche Ansätze der
-    Datenspeicherung und für den Datenzugriff. Da einige Schwierigkeiten auftraten,
-    werde ich auch mögliche Stolpersteine und Lösungen erläutern. \\
+    Datenspeicherung und für den Datenzugriff. Bei den auftretenden Schwierigkeiten
+    musste ich Lösungen finden bzw. etwas adaptieren. \\
  
     Projektbetreuerin:   & Birgit Ziegenmeyer                                               \\
 
@@ -157,11 +157,18 @@ für gewisse Daten besser oder schlechter eignet.\newline
 
 Mein Ursprüngliches Ziel war dabei die Programmierung einer Datenbank
 mit den Datenstrukturen R-Tree, B-Tree, Binary-Tree und Graphen.
-Davon konnte ich leider aufgrund der hohen Komplexität vieles nicht umsetzen.
+Davon konnte ich leider aufgrund der hohen Komplexität (Stand jetzt) vieles nicht umsetzen.
 
 \section{Hintergrund}
 
 \subsection{Arten von Daten}
+
+
+
+räumlich
+zeitlich
+objekte
+verbindungen
 
 \subsection{Betrachtete Datenstrukturen}
 
@@ -172,10 +179,24 @@ graphs (search algos)
 
 \subsection{Arten von Datenbanksystemen}
 
+db enginees
+viele multi modale
+man muss schauen, wo man die daten speichert
+
 \section{Vorgehensweise}
 
+\subsection{BJnet und <socket.h>}
 % implementaton -> networking
-\subsection{implementation -> welche algorithmen}
+\subsection{B-Tree}
+
+\subsection{Binary Tree}
+
+\subsection{C/C++ experience mit gdb}
+
+\subsection{Binäres Sucharray}
+\subsection{Graph Datenbank}
+
+\subsection{Pointer Zugriffe Analyse}
 
 \section{schwierigkeiten/limitationen}
 
@@ -183,41 +204,12 @@ kein echtes server testing, weil hardware nicht so geeignet
 AMDuProf hat nicht funktioniert, weil keine ahnung
 % https://community.amd.com/t5/server-gurus-discussions/amduprof-not-attaching-to-processes-on-linux/m-p/578286#M1589
 
-\section{messwerte}
-\section{Ergebnisse}
+\section{Messwerte}
 
-\section{empfehlung von datenbanken -> einfach regeln}
-
-\subsection{Beantwortung der Forschungsfrage}
-
-\section{Gelernt}
-gdb
-b tree
-socket api linux
-
-\section{fazit}
-
-\section{ausblick interessen geweckt}
-
-% Quellen
-% bjnet
-% 
-
-\clearpage
-
-\begin{bchart}[min=0, max=30, scale=1.9]
-    \bcbar[label=1, text=List Comprehension Python mit Konvertierung zu numba.typed list]{26.849}
-    \smallskip
-    \bcbar[label=2, text=\hspace{7cm}List Comprehension Python]{9.307}
-    \smallskip
-    \bcbar[label=3, text=\hspace{2cm}List Comprehension Python mit Numba]{1.148}
-    \smallskip
-    \bcbar[label=4, text=\hspace{2cm}NumPy np.random.randint mit Numba]{0.401}
-    \smallskip
-    \bcbar[label=5, text=\hspace{2cm}NumPy np.random.randint]{0.051}
-    \smallskip
-    \bcxlabel{\bf{Ausführungszeit in Sekunden}}
-\end{bchart}
+Meine Messungen führte ich auf meinem Desktop PC und meinem Laptop (Plugged-In) durch.
+Auf jedem Computer nahm ich 2 Messreihen auf. In einer Messreihe werden dabei
+die 4 Unterschiedlichen Anfragen an die 2 Datenstrukturen jeweils in einer Schleife direkt
+hintereinander durchgeführt und gemessen.
 
 \clearpage
 
@@ -324,6 +316,41 @@ socket api linux
     \vspace*{-0.8cm}
     \caption{\textbf{2. Messreihe am Laptop (Ryzen 5 5500U)}}
 \end{figure}
+
+\clearpage
+
+\section{Ergebnisse/Reflektion/Deutung der Messwerte}
+
+\subsection{Beantwortung der Forschungsfrage}
+
+
+\section{fazit}
+
+
+gelernt
+gdb
+b tree
+socket api linux
+
+\section{ausblick interessen geweckt}
+
+% Quellen
+% bjnet
+% 
+
+\begin{bchart}[min=0, max=30, scale=1.9]
+    \bcbar[label=1, text=List Comprehension Python mit Konvertierung zu numba.typed list]{26.849}
+    \smallskip
+    \bcbar[label=2, text=\hspace{7cm}List Comprehension Python]{9.307}
+    \smallskip
+    \bcbar[label=3, text=\hspace{2cm}List Comprehension Python mit Numba]{1.148}
+    \smallskip
+    \bcbar[label=4, text=\hspace{2cm}NumPy np.random.randint mit Numba]{0.401}
+    \smallskip
+    \bcbar[label=5, text=\hspace{2cm}NumPy np.random.randint]{0.051}
+    \smallskip
+    \bcxlabel{\bf{Ausführungszeit in Sekunden}}
+\end{bchart}
 
 \clearpage
 
