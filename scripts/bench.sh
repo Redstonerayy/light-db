@@ -1,5 +1,5 @@
-
 cd ..
+make build
 python ./src/bench/data.py
 mkdir -p ./run
 cp ./build/Release/bench ./run/bench
