@@ -57,7 +57,7 @@ int main() {
             *((int*)key_right) = 2;
             *((int*)key_right + 1) = std::numeric_limits<int>::max();
 
-            for (int j = 0; j < 10; ++j) {
+            for (int j = 0; j < 50; ++j) {
                 Timer::start("sorted_array_friends");
                 std::vector<void*> friendship_ptrs = friendships->sorted_array->search_between_keys(key_left, key_right);
                 Timer::stop("sorted_array_friends");
@@ -76,7 +76,7 @@ int main() {
             *((int*)key_right) = 1;
             *((int*)key_right + 1) = std::numeric_limits<int>::max();
 
-            for (int j = 0; j < 10; ++j) {
+            for (int j = 0; j < 50; ++j) {
                 Timer::start("sorted_array_hostilities");
                 std::vector<void*> hostilities_ptrs = hostilities->sorted_array->search_between_keys(key_left, key_right);
                 Timer::stop("sorted_array_hostilities");
@@ -113,7 +113,7 @@ int main() {
         }
 
         // find all friends of student no 2
-        for (int j = 0; j < 10; ++j) {
+        for (int j = 0; j < 50; ++j) {
             Timer::start("graph_friends");
             std::vector<Link> friends = graph->query_links(graph->nodes.at(2), 0);
             Timer::stop("graph_friends");
@@ -123,7 +123,7 @@ int main() {
         // }
 
         // find all enemies of student no 1
-        for (int j = 0; j < 10; ++j) {
+        for (int j = 0; j < 50; ++j) {
             Timer::start("graph_hostilities");
             std::vector<Link> enemies = graph->query_links(graph->nodes.at(1), 1);
             Timer::stop("graph_hostilities");
