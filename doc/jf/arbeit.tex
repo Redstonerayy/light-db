@@ -21,7 +21,7 @@
     sorting=ynt,
     minalphanames=3,
 ]{biblatex}
-\addbibresource{./references.bib}
+\addbibresource{./res/references.bib}
 
 % remove dots in ToC
 \usepackage{tocloft}
@@ -52,6 +52,21 @@
     top=25mm,
     bottom=20mm
 }
+
+% plots
+\usepackage{pgfplotstable}
+% recommended:
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{colortbl}
+
+\usepackage{pgfplots}
+
+% moving in tikz picture
+\usepackage{changepage}
+
+% position figures
+\usepackage{float}
 
 % set line spacing
 \setstretch{1.5}
@@ -132,7 +147,30 @@
     \bcxlabel{\bf{Ausführungszeit in Sekunden}}
 \end{bchart}
 
-\vspace{0.5cm}
+\begin{figure}[H]
+    \centering
+    \begin{adjustwidth*}{}{-1.2cm}
+        \begin{tikzpicture}[scale=1]
+            \begin{axis}[
+                    x label style={at={(axis description cs:0.5,-0.01)},anchor=north},
+                    y label style={at={(axis description cs:-0.01,0.5)},anchor=south},
+                    xlabel=Nummer der Messung,
+                    ylabel=Zeit in Nanosekunden,
+                    width=1.1\textwidth,
+                    height=1.6\textwidth,
+                ]
+                \addplot table [y=$SA_F$, x=NR]{./res/data.dat};
+                \addlegendentry{$SA_F$ series}
+                \addplot table [y=$SA_H$, x=NR]{./res/data.dat};
+                \addlegendentry{$SA_H$ series}
+                \addplot table [y=$G_F$, x=NR]{./res/data.dat};
+                \addlegendentry{$G_F$ series}
+                \addplot table [y=$G_H$, x=NR]{./res/data.dat};
+                \addlegendentry{$G_H$ series}
+            \end{axis}
+        \end{tikzpicture}
+    \end{adjustwidth*}
+\end{figure}
 
 \cite{finland_indepth}
 \cite{indian_overview}
