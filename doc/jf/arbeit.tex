@@ -149,11 +149,15 @@ mit Datenbanken und Modellierung beschäftigt. Da jedoch auf die Funktionsweise 
 Datenbank nicht weiter eingegangen wurde und ich auch schon von Unterschiedlichen
 Datenbankansätzen, genauer Relationalen und Nicht-Relationalen, gehört hatte,
 wollte ich mich ihm Rahmen meines Projektes genauer damit beschäftigen.
-Dazu wollte ich eine einfache Datenbank umsetzen.\newline
+Dazu wollte ich eine einfache Datenbank umsetzen.
+
+\vspace*{0.3cm}
 
 Meine Forschungsfrage ist deshalb, wie die Wahl der Datenstruktur die
 Geschwindigkeit einer Datenbank beeinflusst und inwiefern sich eine Datenstruktur
-für gewisse Daten besser oder schlechter eignet.\newline
+für gewisse Daten besser oder schlechter eignet.
+
+\vspace*{0.3cm}
 
 Mein Ursprüngliches Ziel war dabei die Programmierung einer Datenbank
 mit den Datenstrukturen R-Tree, B-Tree, Binary-Tree und Graphen.
@@ -161,21 +165,37 @@ Davon konnte ich leider aufgrund der hohen Komplexität (Stand jetzt) vieles nic
 
 \section{Hintergrund}
 
-\subsection{Arten von Daten}
+\subsection{Arten von Daten und passende Datenstrukturen}
 
+Um mir einen Überblick über zu verschaffen rechertierte ich zuerst im Internet.
+Dabei fand ich viele Informationen über die Arten von Daten und Datenbanksystemen,
+allerdings nichts konkretes über Performance Vergleiche dieser \cite{no_sql_wikipedia} \cite{indian_overview}.
+Verschiedene Datenarten sind dabei räumliche, zeitliche, als Objekte modellierbare und stark vernetzte Daten.
 
+\vspace*{0.3cm}
 
-räumlich
-zeitlich
+Räumliche Daten sind z. B. Kartendaten (Google Maps, OpenStreetMap). Bestimmte Landmarken oder Objekte
+(Bäume, Mulleimer) lassen sich beispielsweise als Punkte auf einer Fläche modellieren.
+Es müssen dann effizient Fragen wie z. B. "Wie viele Mülleimer gibt es in diesem Park?" oder "Was sind
+die 3 am besten Bewerteten Restaurant in der Innenstadt?" beantwortet werden.
+Eine dafür ausgelegte Datenstruktur ist der R-Tree.
+
+\vspace*{0.3cm}
+
+Zeitliche Daten können z. B. die von einem Sensor gemessene Temperaturen sein.
+Wichtig wäre dann z. B., dass man einfach Statistiken wie Durchschnittswerte bilden
+oder Anomalien erkennen könnte.
+
+\vspace*{0.3cm}
+
 objekte
+b tree
+
+\vspace*{0.3cm}
+
 verbindungen
 
-\subsection{Betrachtete Datenstrukturen}
-
-r-tree (spatial data)
-b-tree
-indices (normal tables)
-graphs (search algos)
+graphs
 
 \subsection{Arten von Datenbanksystemen}
 
