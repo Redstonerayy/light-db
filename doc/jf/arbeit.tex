@@ -29,6 +29,9 @@
 % import line spacing
 \usepackage{setspace}
 
+% listings
+\usepackage{listings}
+
 % colors
 \usepackage{xcolor}
 
@@ -40,7 +43,7 @@
 
 % for urls
 % break urls on line end
-\usepackage[breaklinks, colorlinks=true, urlcolor=blue, citecolor=blue, linkcolor=black]{hyperref}
+\usepackage[breaklinks, colorlinks=true, urlcolor=gray, citecolor=gray, linkcolor=black]{hyperref}
 
 % Remove Indentation at new line
 \setlength{\parindent}{0cm}
@@ -74,6 +77,10 @@
 % position figures
 \usepackage{float}
 
+% b tree
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+
 % set line spacing
 \setstretch{1.5}
 
@@ -99,23 +106,23 @@
 \large
 \begin{tabular}{l p{12cm}}
 
-    Fachgebiet:          & Mathematik/Informatik                                            \\
+    Fachgebiet:          & Mathematik/Informatik      \\
 
-    Wettbewerbssparte:   & Jugend Forscht                                                   \\
+    Wettbewerbssparte:   & Jugend Forscht             \\
 
-    Bundesland:          & Niedersachsen                                                    \\
+    Bundesland:          & Niedersachsen              \\
 
-    Wettbewerbsjahr:     & 2024                                                             \\
+    Wettbewerbsjahr:     & 2024                       \\
 
     Thema des Projektes: &
     In meinem Projekt wollte ich verschiedene in Datenbanksystemen genutzte Datenstrukturen
     implementieren und testen. Dabei betrachtete ich auch unterschiedliche Ansätze der
     Datenspeicherung und für den Datenzugriff. Bei den auftretenden Schwierigkeiten
     musste ich Lösungen finden bzw. etwas adaptieren. \\
- 
-    Projektbetreuerin:   & Birgit Ziegenmeyer                                               \\
 
-    Institution:         & Schillerschule Hannover                                          \\
+    Projektbetreuerin:   & Birgit Ziegenmeyer         \\
+
+    Institution:         & Schillerschule Hannover    \\
 \end{tabular}
 
 \clearpage
@@ -167,10 +174,11 @@ Davon konnte ich leider aufgrund der hohen Komplexität (Stand jetzt) vieles nic
 
 \subsection{Arten von Daten und passende Datenstrukturen}
 
-Um mir einen Überblick über zu verschaffen rechertierte ich zuerst im Internet.
+Um mir einen Überblick über das Themengebiet zu verschaffen recherchierte ich zuerst im Internet.
 Dabei fand ich viele Informationen über die Arten von Daten und Datenbanksystemen,
-allerdings nichts konkretes über Performance Vergleiche dieser \cite{no_sql_wikipedia} \cite{indian_overview}.
-Verschiedene Datenarten sind dabei räumliche, zeitliche, als Objekte modellierbare und stark vernetzte Daten.
+allerdings nichts konkretes über Performance Vergleiche dieser.
+Verschiedene Datenarten sind dabei räumliche, zeitliche, als Objekte modellierbare und stark vernetzte Daten
+\cite{no_sql_wikipedia} \cite{indian_overview}.
 
 \vspace*{0.3cm}
 
@@ -206,35 +214,191 @@ als Datenstruktur besser.
 Moderne Datenbanksysteme ermöglichen meist, mit einem System verschiedene
 Speicherungsformen zu nutzen. Trotzdem muss man sich bei einem Multi-modalen System
 natürlich überlegen, welche Daten man nun in welcher Art von Datenstruktur speichern
-will. Eine Übersicht gibt es auf der Website db engines.
+will. Die Website \href{https://db-engines.com/en/ranking}{db-engines.com} stellt z. B.
+eine Übersicht über die aktuell beliebtesten Datenbanksysteme und deren Modalitäten dar.
 
 \section{Vorgehen}
 
-\subsection{BJnet und <socket.h>}
-% implementaton -> networking
+\subsection{Schwierigkeiten bei der Implementierung}
 
-\subsection{B-Tree}
+Mein geplantes Vorgehen bestand darin, ein Datenbanksystem mit diesen
+verschiedenen Datenstrukturen in C++ umzusetzen.
+Während dem Entwicklungsprozess und der Implementierung zeigte sich allerdings die
+zunehmende Komplexität, weswegen ich nur begrenzt die verschiedenen Datenstrukturen
+vergleichen konnte. Trotzdem werde die angestrebten Datenstrukturen
+zumindest in ihrer Funktion erläutern und meine Schwierigkeiten bei der Umsetzung
+beschreiben, sodass sie anderen vielleicht nicht passieren.
+Auch werde ich meine dann tatsächlich durchgeführten Tests beschreiben.
+Also ein normaler Entwicklungsprozess ganz nach dem Zitat
 
-\subsection{Binary Tree}
+\begin{quote}
+    \guillemetright we do these things not because they are easy, \\
+    but because we thought they were going to be easy \guillemetleft
+\end{quote}
 
-\subsection{Binäres Sucharray}
+\subsubsection{Beej und <sys/socket.h>}
+Zu Beginn meines Projektes folgte ich einem guten \href{https://beej.us/guide/bgnet/html/}{Tutorial}
+von Brian Hall, um Kommunikation über Linux Websockets umzusetzen, da Datenbanksysteme
+eine Schnittstelle zu anderen Programmen benötigen.
+Da mein Datenbank-Backend allerdings nicht rechtzeitig ausgereift genug war, konnte
+ich diese Schnittstelle noch nicht in Kombination mit dem Rest testen.
 
-\subsection{Graph Datenbank}
+\subsubsection{Probleme bei B-Tree und Binary-Tree}
 
-\subsection{Pointer Zugriffe Analyse}
+Da der B-Tree eine in vielen Datenbanken verwendete Datenstruktur ist, wollte ich
+diesen zuerst implementieren. Als Grundlage nahm ich die erste Veröffentlichung über
+diese durch 2 Boeing Entwickler \cite{boeing_engineers}.
 
-\section{schwierigkeiten/limitationen}
+\vspace*{0.3cm}
 
-kein echtes server testing, weil hardware nicht so geeignet
-AMDuProf hat nicht funktioniert, weil keine ahnung
-% https://community.amd.com/t5/server-gurus-discussions/amduprof-not-attaching-to-processes-on-linux/m-p/578286#M1589
+Der B-Tree ist dabei ähnlich zu einem Binären Suchbaum.
+Der Hauptunterschied ist, das jeder Node nicht nur 2 Child Nodes
+hat, wodurch der Baum weniger tief ist.
+Um Elemente zu Suchen, zu Löschen oder zu Ändern folgt man der Baumstruktur vom
+Root Node ausgehend. Durch Vergleiche innerhalb der Nodes und das traversieren der
+Äste findet man ein bestimmtes Elemente oder eine Position im Baum.
+
+\begin{center}
+    \begin{tikzpicture}
+        \tikzstyle{bplus}=[rectangle split, rectangle split horizontal,rectangle split ignore empty parts,draw]
+        \tikzstyle{every node}=[bplus]
+        \tikzstyle{level 1}=[sibling distance=80mm]
+        \tikzstyle{level 2}=[sibling distance=15mm]
+        \node {15} [->]
+        child {node {3 \nodepart{two} 7}
+                child {node {1 \nodepart{two} 2}}
+                child {node {4 \nodepart{two} 6}}
+                child {node {8 \nodepart{two} 9}}
+            }
+        child {node {21 \nodepart{two} 28 \nodepart{three} 32 \nodepart{four} 50}
+                child[sibling distance=20mm] {node {17 \nodepart{two} 20}}
+                child[sibling distance=20mm] {node {22 \nodepart{two} 25}}
+                child[sibling distance=20mm] {node {28 \nodepart{two} 30}}
+                child[sibling distance=25mm] {node {34 \nodepart{two} 38 \nodepart{three} 44 \nodepart{four} 47}}
+                child[sibling distance=30mm] {node {53 \nodepart{two} 54 \nodepart{three} 60 \nodepart{four} 88}}
+            }
+        ;\end{tikzpicture}
+\end{center}
+
+Bei der Implementation des B-Tree traten allerdings einige Probleme auf.
+Der Hauptgrund, warum ich mich dafür entschied, andere Datenstrukturen
+zu testen war, dass die Ausbalancierung beim B-Tree relativ komplex ist.
+Auch entschied ich mich, meine Tests ausschließlich mit im RAM liegenden Daten
+durchzuführen, da eine Speicherung auf einer Festplatte noch mehr Komplexität bedeutet
+hätte.
+
+\vspace*{0.5cm}
+
+Anschließend implementierte ich als Alternative dann einen AVL-Tree, eine sich selbst
+ausbalancierende Variante des Binären Suchbaums (BST). Beim anschließenden
+konzeptionieren der Performance-Tests entdeckte ich allerdings noch einen
+beim einfügen von Elementen auftretenden Fehler, weswegen ich mich entschied,
+auch diesen nicht zu testen.
+
+\clearpage
+
+\subsection{Testdaten und Test-Datenstrukturen}
+
+\subsubsection{Testdaten}
+
+Bei den Testdaten handelt es sich um eine fiktive Schülerschaft, in der jeder
+Schüler Freundschaften und Feindschaften hat. Diese Testdaten generierte ich mir
+mit einem Python Script und speicherte diese in einer CSV-Datei.
+Jeder Schüler hat dabei eine ID und einen Namen, der eine zufällige Zeichenkette ist.
+Anschließend sind bei jedem Schüler noch 100 Freund- und Feindschaften eingetragen.
+
+\begin{lstlisting}
+0, eszycidpyopumzgd, 255777-14862-..., 204372-226894-...
+1, idixqgtnahamebxf, 233658-369416-..., 265451-355559-...
+2, digztyrwpvlifrgj, 104446-129174-..., 188986-42660-...
+...
+\end{lstlisting}
+
+\subsubsection{Testanforderungen}
+
+Bei meinen Performance Tests verglich ich die Suchgeschwindigkeit der Datenstrukturen.
+Die gleichen Testdaten wurden in beide Datenstrukturen eingelesen und anschließend
+wurde gemessen, wie schnell auf einen bestimmten Teil der Daten jeweils zugegriffen
+werden konnte. Einmal sollten alle Freunde von Schüler Nr. 2 und einmal alle
+Feinschaften von Schüler Nr. 1 gefunden werden.
+
+\subsubsection{Such-Array}
+
+Auch aufgrund der vorigen Schwierigkeiten testete ich nun nicht
+mit einem B-Tree oder Binary-Tree, sondern wendete die Binäre Suche
+auf ein sortiertes Array an. Prinzipiell nutzen aber alle 3 Datenstrukturen die
+Binäre Suche. Die Testdaten sind in diesem Fall auf 3 Such-Arrays (vgl. Tabellen)
+aufgeteilt, jeweils eine für Schüler, Freundschaften und Feindschaften.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        Schüler\_1\_ID & Schüler\_2\_ID \\ \hline
+        5          & 7          \\ \hline
+        5        & 75         \\ \hline
+        5        & 456        \\ \hline
+        5       & 45         \\ \hline
+    \end{tabular}
+    \qquad
+    \begin{tabular}{|l|l|}
+        \hline
+        Schüler\_1\_ID & Schüler\_2\_ID \\ \hline
+        7          & 629          \\ \hline
+        7        & 762         \\ \hline
+        7        & 229        \\ \hline
+        7       & 29435         \\ \hline
+    \end{tabular}
+    \caption{Tabellenausschnitte Freundschaften/Feindschaften}
+\end{table}
+
+Um alle Freunde/Feinde eines Schülers zu finden, müssen in
+den als Assoziationstabellen fungierenden, sortierten Such-Arrays
+alle Datensätze zwischen dem kleinstmöglichen und größtmöglichen Wert
+gefunden Werten. Beispielsweise für den Schüler $5$ alles zwischen den Datensätzen
+$5 | 0$ und $5 | m$ wenn $m$ die Anzahl an Schülern ist. Da das Such-Array
+nach beiden Spalten sortiert ist, muss nur mit der Binären Suche das linke
+und rechte Ende des Bereichs bestimmt werden. Anschließend können in linearer
+Zeit alle gesuchten Datensätze ausgelesen werden.
+
+\vspace*{0.5cm}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.1\textwidth]{./res/code_sort_array.png}
+    \caption{C++ Code der Such-Array-Suchfunktion}
+\end{figure}
+
+\subsubsection{Graph}
+
+Bei meiner Implementierung einer Graph-Datenstruktur sind in jedem Node
+die Daten und die Verbindungen zu anderen Nodes gespeichert.
+Um alle Freundschaften oder Feindschaften zu erhalten muss nur über diese
+Daten iteriert werden und man erhält schnell die Daten der befreundeten oder
+befeindeten Schüler. Die Art der Verbindung (Freund/Feind) kann dabei durch
+das $link\_schema$ festgelegt werden.
+
+\vspace*{0.5cm}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{./res/code_graphdb.png}
+    \caption{C++ Code der Graph-Suchfunktion}
+\end{figure}
+
+\subsection{Komplexitäts Analyse}
+
+
 
 \section{Messwerte}
 
 Meine Messungen führte ich auf meinem Desktop PC und meinem Laptop (Plugged-In) durch.
-Auf jedem Computer nahm ich 2 Messreihen auf. In einer Messreihe werden dabei
-die 4 Unterschiedlichen Anfragen an die 2 Datenstrukturen jeweils in einer Schleife direkt
-hintereinander durchgeführt und gemessen.
+Auf jedem Computer nahm ich 2 Messreihen auf.
+Jede der 4 Anfragen and die 2 Datenstrukturen wurde jeweils 50-mal direkt hintereinander
+ausgeführt.
+$SA$ beschreibt die Datenstruktur Such-Array. $G$ stetht für Graph.
+Das $F$ beschreibt die Suche nach allen Freunden des Schülers Nr. 2.
+Das $H$ beschreibt die Suche nach allen Feindschaften (Hostilities) des Schülers Nr. 1.
 
 \clearpage
 
@@ -344,13 +508,40 @@ hintereinander durchgeführt und gemessen.
 
 \clearpage
 
-\section{Ergebnisse/Reflektion/Deutung der Messwerte}
+\section{Deutung der Messwerte}
 
-\subsection{Beantwortung der Forschungsfrage}
+Bei den Messwerten am PC lässt sich erkennen, dass in den ersten paar Messungen die
+benötigte Zeit deutlich höher ist als bei den restlichen, nachfolgenden Messungen.
+Die benötigte Zeit aller Tests pendelt sich auf einem niedrigeren Niveau ein.
+Gleiches ist auch am Laptop zu beobachten, wo die Messpunkte jedoch unregelmäßiger sind.
+Dies lässt sich vermutlich auf eine Speicherung von Werten im CPU-Cache zurückführen,
+in dem nach den ersten Durchläufen Daten vorgehalten werden, was zu besseren
+Messergebnissen führt.
+Vereinzelt gibt es auch in diesen Bereichen bei PC und Laptop ausreißende Werte.
+Diese sind wahrscheinlich Messanomalien, erzeugt durch einmahlige Lastspitzen verursacht
+durch andere Prozesse auf dem Testsystem oder durch Hardwarebedingte Faktoren.
+Betrachtet man die 1. Messung, wo die Werte noch auseinanderliegen,
+so lässt sich nicht feststellen, dass eine der Datenstrukturen schneller
+ist als die anderen. Interessant ist bei diesen ersten Messwerten, dass die Messungen
+auf gleich strukturierte Daten (Freundschaften und Feindschaften) deutlich voneinander
+Abweichen. Nicht überraschend sind die abweichenden Niveaus von PC und Laptop,
+da bei CPUs mit unterschiedlichem Leistungsniveau logischerweise auch andere
+Performance-Werte erzeugt werden.
 
+\section{Beantwortung der Forschungsfrage}
+
+Abschließend lässt sich die Forschungsfrage insofern beantworten, als dass
+die Wahl der Datenstruktur in diesem Fall keinen Einfluss auf die Zugriffsgeschwindigkeit
+hat. Keine der Datenstrukturen scheint der anderen Überlegen.
+
+\section{Schwierigkeiten und Limitationen}
+
+implementation
+nur ram
+AMDuProf hat nicht funktioniert, weil keine ahnung
+% https://community.amd.com/t5/server-gurus-discussions/amduprof-not-attaching-to-processes-on-linux/m-p/578286#M1589
 
 \section{fazit}
-
 
 gelernt
 gdb

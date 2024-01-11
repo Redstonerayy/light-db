@@ -55,7 +55,7 @@ std::vector<void*> Sorted_Array::search_between_keys(void* key_left, void* key_r
     if (res_r.status == 0 && compare_keys(this->elements.at(res_r.index).key, key_right, this->key_attribute_lengths) == -1) --right_start;
 
     std::vector<void*> data_ptrs;
-    for(int i = left_start; i < right_start + 1; ++i){
+    for (int i = left_start; i < right_start + 1; ++i) {
         data_ptrs.emplace_back(this->elements.at(i).data);
     }
     return data_ptrs;
