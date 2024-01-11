@@ -176,8 +176,8 @@ Verschiedene Datenarten sind dabei räumliche, zeitliche, als Objekte modellierb
 
 Räumliche Daten sind z. B. Kartendaten (Google Maps, OpenStreetMap). Bestimmte Landmarken oder Objekte
 (Bäume, Mulleimer) lassen sich beispielsweise als Punkte auf einer Fläche modellieren.
-Es müssen dann effizient Fragen wie z. B. "Wie viele Mülleimer gibt es in diesem Park?" oder "Was sind
-die 3 am besten Bewerteten Restaurant in der Innenstadt?" beantwortet werden.
+Es müssen dann effizient Fragen wie z. B. ``Wie viele Mülleimer gibt es in diesem Park?'' oder ``Was sind
+die 3 am besten bewerteten Restaurants in der Innenstadt?'' beantwortet werden.
 Eine dafür ausgelegte Datenstruktur ist der R-Tree.
 
 \vspace*{0.3cm}
@@ -188,32 +188,37 @@ oder Anomalien erkennen könnte.
 
 \vspace*{0.3cm}
 
-objekte
-b tree
+Daten, die klassischerweise in relationellen Datenbanken gespeichert werden,
+lassen sich durch viele, gleich aufgebaute Objekte modellieren lassen.
+Beispielsweise speichert ein Unternehmen über Kunden immer die gleichen Daten
+(Name, E-Mail, ...). Jeder Datensatz kann dann eindeutig z. B. über eine
+ID identifiziert. Eine dafür geeignete Datenstruktur ist der B-Tree, eine
+dem Binary-Tree ähnliche Datenstruktur.
 
 \vspace*{0.3cm}
 
-verbindungen
-
-graphs
+Wenn zwischen einzelnen Daten wie z. B. jedem Nutzer einer Social Media Plattform
+allerdings viele Beziehungen bestehen (Follower, Likes), so eignet sich ein Graph
+als Datenstruktur besser.
 
 \subsection{Arten von Datenbanksystemen}
 
-db enginees
-viele multi modale
-man muss schauen, wo man die daten speichert
+Moderne Datenbanksysteme ermöglichen meist, mit einem System verschiedene
+Speicherungsformen zu nutzen. Trotzdem muss man sich bei einem Multi-modalen System
+natürlich überlegen, welche Daten man nun in welcher Art von Datenstruktur speichern
+will. Eine Übersicht gibt es auf der Website db engines.
 
-\section{Vorgehensweise}
+\section{Vorgehen}
 
 \subsection{BJnet und <socket.h>}
 % implementaton -> networking
+
 \subsection{B-Tree}
 
 \subsection{Binary Tree}
 
-\subsection{C/C++ experience mit gdb}
-
 \subsection{Binäres Sucharray}
+
 \subsection{Graph Datenbank}
 
 \subsection{Pointer Zugriffe Analyse}
@@ -349,6 +354,7 @@ hintereinander durchgeführt und gemessen.
 
 gelernt
 gdb
+C/C++ experience mit gdb
 b tree
 socket api linux
 
