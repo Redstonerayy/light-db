@@ -141,7 +141,7 @@
 
 \renewcommand*\contentsname{Inhaltsverzeichnis}
 
-\renewcommand{\cftdot}{}
+% \renewcommand{\cftdot}{}
 
 \tableofcontents
 
@@ -156,7 +156,8 @@ mit Datenbanken und Modellierung beschäftigt. Da jedoch auf die Funktionsweise 
 Datenbank nicht weiter eingegangen wurde und ich auch schon von Unterschiedlichen
 Datenbankansätzen, genauer Relationalen und Nicht-Relationalen, gehört hatte,
 wollte ich mich ihm Rahmen meines Projektes genauer damit beschäftigen.
-Dazu wollte ich eine einfache Datenbank umsetzen.
+Nachdem ich ein spannenden Vortrag von Richard Hipp angeschaut hatte,
+entschied ich mich, dass ich selbst eine Datenbank umsetzen wollte \cite{sql_ideas}
 
 \vspace*{0.3cm}
 
@@ -314,7 +315,7 @@ Anschließend sind bei jedem Schüler noch 100 Freund- und Feindschaften eingetr
 ...
 \end{lstlisting}
 
-\subsubsection{Testanforderungen}
+\subsubsection{Teststruktur}
 
 Bei meinen Performance Tests verglich ich die Suchgeschwindigkeit der Datenstrukturen.
 Die gleichen Testdaten wurden in beide Datenstrukturen eingelesen und anschließend
@@ -388,8 +389,6 @@ das $link\_schema$ festgelegt werden.
 
 \subsection{Komplexitäts Analyse}
 
-
-
 \section{Messwerte}
 
 Meine Messungen führte ich auf meinem Desktop PC und meinem Laptop (Plugged-In) durch.
@@ -400,7 +399,7 @@ $SA$ beschreibt die Datenstruktur Such-Array. $G$ stetht für Graph.
 Das $F$ beschreibt die Suche nach allen Freunden des Schülers Nr. 2.
 Das $H$ beschreibt die Suche nach allen Feindschaften (Hostilities) des Schülers Nr. 1.
 
-\clearpage
+\vspace*{1cm}
 
 \begin{figure}[H]
     \centering
@@ -451,8 +450,6 @@ Das $H$ beschreibt die Suche nach allen Feindschaften (Hostilities) des Schüler
     \vspace*{-0.8cm}
     \caption{\textbf{2. Messreihe am PC (Ryzen 7 2700)}}
 \end{figure}
-
-\clearpage
 
 \begin{figure}[H]
     \centering
@@ -506,8 +503,6 @@ Das $H$ beschreibt die Suche nach allen Feindschaften (Hostilities) des Schüler
     \caption{\textbf{2. Messreihe am Laptop (Ryzen 5 5500U)}}
 \end{figure}
 
-\clearpage
-
 \section{Deutung der Messwerte}
 
 Bei den Messwerten am PC lässt sich erkennen, dass in den ersten paar Messungen die
@@ -536,45 +531,24 @@ hat. Keine der Datenstrukturen scheint der anderen Überlegen.
 
 \section{Schwierigkeiten und Limitationen}
 
-implementation
-nur ram
-AMDuProf hat nicht funktioniert, weil keine ahnung
-% https://community.amd.com/t5/server-gurus-discussions/amduprof-not-attaching-to-processes-on-linux/m-p/578286#M1589
+Bei der Umsetzung der Datenbank und den Tests hatte ich einige Probleme.
+Eine Sache, die ich nicht prüfen konnte ist, wie sich Cache, RAM und Art des
+Massenspeichers (HDD, SSD) auf die Geschwindigkeit beim Datenzugriff auswirken.
+Dazu wollte ich eigentlich \href{https://www.amd.com/en/developer/uprof.html}{AMDuProf}
+nutzen, eine von AMD für Ryzen CPUs bereitgestellte Software, mit der sich tiefgreifende
+Daten über die Arbeit der CPU sammeln lassen. Mit dieser hätte ich z. B. die Cache-Misses
+analysieren können, doch leider lief diese nicht auf meinem System.
+Auch konnte ich nicht prüfen, welche Anfragen an eine Datenbank CPU limitiert
+und welche I/O bzw. Netzwerk limitiert sind.
 
-\section{fazit}
+\section{Fazit}
 
-gelernt
-gdb
-C/C++ experience mit gdb
-b tree
-socket api linux
-
-\section{ausblick interessen geweckt}
-
-% Quellen
-% bjnet
-% 
-
-\begin{bchart}[min=0, max=30, scale=1.9]
-    \bcbar[label=1, text=List Comprehension Python mit Konvertierung zu numba.typed list]{26.849}
-    \smallskip
-    \bcbar[label=2, text=\hspace{7cm}List Comprehension Python]{9.307}
-    \smallskip
-    \bcbar[label=3, text=\hspace{2cm}List Comprehension Python mit Numba]{1.148}
-    \smallskip
-    \bcbar[label=4, text=\hspace{2cm}NumPy np.random.randint mit Numba]{0.401}
-    \smallskip
-    \bcbar[label=5, text=\hspace{2cm}NumPy np.random.randint]{0.051}
-    \smallskip
-    \bcxlabel{\bf{Ausführungszeit in Sekunden}}
-\end{bchart}
+Insgesamt konnte ich nicht so viele relevante Daten sammeln, würde das Projekt aber
+trotzdem als lehrreich bewerten. Mir persönlich hat es einen guten Einblick in
+Datenbanken und andere interessante Themen wie Socket Programmierung gegeben
+und ich konnte mehr über Datenstrukturen, C/C++ und gdb (GNU Debugger) lernen.
 
 \clearpage
-
-\cite{boeing_engineers}
-\cite{indian_overview}
-\cite{sql_ideas}
-\cite{avl_tree_wikipedia}
 
 % break urls
 \emergencystretch=0.5em
