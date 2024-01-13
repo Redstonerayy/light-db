@@ -153,13 +153,13 @@
 
 \subsection{Motivation}
 
-Im Rahmen des Informatik Leistungkurses meiner Schule haben wir (Mitschüler und Ich) uns
+Im Rahmen des Informatik-Leistungkurses meiner Schule haben wir (Mitschüler und ich) uns
 mit Datenbanken und Daten-Modellierung beschäftigt. Da jedoch auf die Funktionsweise einer
-Datenbank nicht weiter eingegangen wurde und ich auch schon von Unterschiedlichen
+Datenbank nicht weiter eingegangen wurde und ich auch schon von unterschiedlichen
 Datenbankansätzen, genauer Relationalen und Nicht-Relationalen, gehört hatte,
 wollte ich mich im Rahmen meines Projektes genauer damit beschäftigen
 und mehr darüber lernen.
-Nachdem ich ein spannenden Vortrag von Richard Hipp gesehen hatte,
+Nachdem ich einen spannenden Vortrag von Richard Hipp gesehen hatte,
 entschied ich mich, dass ich selbst eine Datenbank umsetzen wollte \cite{sql_ideas}.
 
 \subsection{Forschungsfrage}
@@ -170,7 +170,7 @@ für gewisse Daten besser oder schlechter eignet.
 
 \subsection{Ziel}
 
-Mein Ursprüngliches Ziel war die Entwicklung einer Datenbank
+Mein ursprüngliches Ziel war die Entwicklung einer Datenbank
 mit den Datenstrukturen R-Tree, B-Tree, Binary-Tree und Graphen.
 Davon konnte ich leider aufgrund der hohen Komplexität (stand jetzt) nur ein
 Binäres-Such-Array und eine Graph-Datenstruktur umsetzen.
@@ -183,8 +183,8 @@ Binäres-Such-Array und eine Graph-Datenstruktur umsetzen.
 
 Um mir einen Überblick über das Themengebiet zu verschaffen, recherchierte ich zuerst
 im Internet. Dabei fand ich viele Informationen über die Arten von Daten und
-Datenbanksystemen, allerdings nichts konkretes über Performance-Vergleiche dieser.
-Verschiedene Datenarten sind dabei räumliche, zeitliche, als Objekte modellierbare und stark vernetzte Daten
+Datenbanksystemen, allerdings nichts Konkretes über Performance-Vergleiche dieser.
+Verschiedene Datenarten sind dabei räumliche, zeitliche, relationale (als Objekte modellierbare) und stark vernetzte Daten
 \cite{no_sql_wikipedia} \cite{indian_overview}.
 
 \vspace*{0.3cm}
@@ -197,13 +197,13 @@ Eine dafür ausgelegte Datenstruktur ist der R-Tree.
 
 \vspace*{0.3cm}
 
-Zeitliche Daten können z. B. die von einem Sensor gemessene Temperaturen sein.
+Zeitliche Daten können z. B. die von einem Sensor gemessenen Temperaturen sein.
 Wichtig wäre bei diesen, dass sich statistische Größen wie Durchschnittswerte einfach
 bilden lassen und Anomalien erkannt werden.
 
 \vspace*{0.3cm}
 
-Daten, die klassischerweise in relationellen Datenbanken gespeichert werden,
+Daten, die klassischerweise in relationalens Datenbanken gespeichert werden,
 lassen sich als Objekte modellieren.
 Beispielsweise speichert ein Unternehmen über Kunden immer die gleichen Daten
 (Name, E-Mail, ...). Jeder Datensatz kann dann eindeutig z. B. über eine
@@ -212,7 +212,7 @@ dem Binary-Tree ähnliche Datenstruktur.
 
 \vspace*{0.3cm}
 
-Wenn zwischen einzelnen Daten wie z. B. jedem Nutzer einer Social Media Plattform
+Wenn zwischen einzelnen Daten von z. B. jedem Nutzer einer Social-Media-Plattform
 allerdings viele Beziehungen bestehen (Follower, Likes), so eignet sich eine
 Graph-Datenstruktur besser. Diese ermöglicht dann, schnell die Verbindungen
 zwischen Nutzern herausfinden, um z. B. Gruppen innerhalb des Netzwerks zu erkennen.
@@ -231,13 +231,13 @@ eine Übersicht über die aktuell beliebtesten Datenbanksysteme und deren Modali
 
 Mein geplantes Vorgehen bestand darin, ein Datenbanksystem mit diesen
 verschiedenen Datenstrukturen in C++ umzusetzen.
-Während dem Entwicklungsprozess und der Implementierung zeigte sich allerdings die
+Während des Entwicklungsprozesses und der Implementierung zeigte sich allerdings die
 zunehmende Komplexität, weswegen ich nur begrenzt die verschiedenen Datenstrukturen
 vergleichen konnte. Trotzdem werde ich die angestrebten Datenstrukturen
 zumindest in ihrer Funktion erläutern und meine Schwierigkeiten bei der Umsetzung
 beschreiben.
 Auch werde ich meine dann tatsächlich durchgeführten Tests beschreiben.
-Also ein normaler Entwicklungsprozess ganz nach dem Zitat:
+Also ein ganz normaler Entwicklungsprozess nach dem Zitat:
 
 \begin{quote}
     \guillemetright we do these things not because they are easy, \\
@@ -255,17 +255,17 @@ ich diese Schnittstelle noch nicht in Kombination mit dem Rest testen.
 
 Da der B-Tree eine in vielen Datenbanken verwendete Datenstruktur ist, wollte ich
 diesen zuerst implementieren. Als Grundlage nahm ich die erste B-Trees beschreibende
-Veröffentlichung von 2 Boeing Entwicklern \cite{boeing_engineers}.
+Veröffentlichung von 2 Boeing-Entwicklern \cite{boeing_engineers}.
 
 \vspace*{0.3cm}
 
 Der B-Tree ist dabei ähnlich zu einem binären Suchbaum.
-Der Hauptunterschied ist, das jeder Node mehr als nur 2 Child-Nodes
+Der Hauptunterschied ist, dass jeder Node mehr als nur 2 Child-Nodes
 hat, wodurch der Baum weniger tief ist.
-Um Elemente zu suchen, zu löschen oder zu andern folgt man, ähnlich wie beim
+Um Elemente zu suchen, zu löschen oder zu ändern folgt man, ähnlich wie beim
 Binary-Tree, der Baumstruktur vom Root Node ausgehend.
 Durch Vergleiche innerhalb der Nodes und das Traversieren der
-Äste findet man ein bestimmtes Elemente oder eine Position im Baum.
+Äste findet man ein bestimmtes Element oder eine Position im Baum.
 
 \begin{figure}[H]
     \begin{center}
@@ -292,20 +292,20 @@ Durch Vergleiche innerhalb der Nodes und das Traversieren der
     \caption{\textbf{B-Tree der Tiefe 2}}
 \end{figure}
 
-Bei der Implementation des B-Tree traten allerdings einige Probleme auf.
+Bei der Implementierung des B-Tree traten allerdings einige Probleme auf.
 Das größte Problem war, dass die Ausbalancierung beim B-Tree relativ komplex ist.
-Deshalb entschied ich mich dafür, andere Datenstrukturen zu testen war.
+Deshalb entschied ich mich dafür, andere Datenstrukturen zu testen.
 Auch entschied ich mich, meine Tests ausschließlich mit im RAM liegenden Daten
 durchzuführen, da eine Speicherung auf einer Festplatte noch mehr Komplexität bedeutet
 hätte. Da der R-Tree eine modifizierte Version des B-Tree ist, konnte ich auch diesen
-somit auch nicht umsetzen.
+somit nicht umsetzen.
 
 \vspace*{0.5cm}
 
 Anschließend implementierte ich als Alternative dann einen AVL-Tree, eine sich selbst
 ausbalancierende Variante des Binären-Suchbaums. Beim anschließenden
-konzeptionieren der Performance-Tests entdeckte ich allerdings noch einen
-beim einfügen von Elementen auftretenden Fehler bei meinem AVL-Tree,
+Konzeptionieren der Performance-Tests entdeckte ich allerdings noch einen
+beim Einfügen von Elementen auftretenden Fehler bei meinem AVL-Tree,
 weswegen ich mich spontan dazu entscheiden musste, auch diesen nicht zu testen.
 
 \subsection{Testdaten}
@@ -331,14 +331,14 @@ Bei meinen Performance Tests verglich ich die Suchgeschwindigkeit der Datenstruk
 Die gleichen Testdaten wurden in beide Datenstrukturen eingelesen und anschließend
 wurde gemessen, wie schnell auf einen bestimmten Teil der Daten jeweils zugegriffen
 werden kann. Im 1. Test sollten alle Freunde von Schüler Nr. 2 und im 2. Test alle
-Feinschaften von Schüler Nr. 1 gefunden werden.
+Feindschaften von Schüler Nr. 1 gefunden werden.
 
 \subsection{Such-Array}
 
 Aufgrund der vorigen Schwierigkeiten testete ich nun nicht
-mit einem B-Tree oder Binary-Tree, sondern wendete die Binäre Suche
+mit einem B-Tree oder Binary-Tree, sondern wendete die binäre Suche
 auf ein sortiertes Array an. Prinzipiell nutzen aber alle 3 Datenstrukturen die
-Binäre Suche. Deswegen nahm ich an, dass alle 3 Datenstrukturen bei Daten im RAM
+binäre Suche. Deswegen nahm ich an, dass alle 3 Datenstrukturen bei Daten im RAM
 ähnlich schnell Daten finden können.
 Die Testdaten sind in diesem Fall auf 3 Such-Arrays (vgl. Tabellen)
 aufgeteilt, jeweils eine für Schüler, Freundschaften und Feindschaften.
@@ -368,10 +368,10 @@ aufgeteilt, jeweils eine für Schüler, Freundschaften und Feindschaften.
 Um alle Freunde/Feinde eines Schülers zu finden, müssen in
 den als Assoziationstabellen fungierenden, sortierten Such-Arrays
 alle Datensätze zwischen dem kleinstmöglichen und größtmöglichen Wert
-gefunden Werten. Beispielsweise für den Schüler $5$ alles zwischen (inklusiv) den Datensätzen
+gefunden werten. Beispielsweise für den Schüler $5$ alles zwischen (inklusiv) den Datensätzen
 $5 | 0$ und $5 | m$ wenn $m$ die Anzahl an Schülern ist. Da das Such-Array
-nach beiden Spalten sortiert ist, muss nur mit der Binären Suche das linke
-und rechte Ende des Bereichs bestimmt werden. Anschließend können in linearer
+nach beiden Spalten sortiert ist, muss nur mit der binären Suche das linke
+und das rechte Ende des Bereichs bestimmt werden. Anschließend können in linearer
 Zeit alle gesuchten Datensätze ausgelesen werden.
 
 % \vspace*{0.5cm}
@@ -386,7 +386,7 @@ Zeit alle gesuchten Datensätze ausgelesen werden.
 
 Bei meiner Implementierung einer Graph-Datenstruktur sind in jedem Node
 die Daten und die Verbindungen zu anderen Nodes gespeichert.
-Um alle Freundschaften oder Feindschaften zu erhalten muss nur über diese
+Um alle Freundschaften oder Feindschaften zu erhalten, muss nur über diese
 Daten iteriert werden und man erhält schnell die Daten der befreundeten oder
 befeindeten Schüler. Die Art der Verbindung (Freund/Feind) kann dabei durch
 das $link\_schema$ festgelegt werden.
@@ -427,7 +427,7 @@ das $link\_schema$ festgelegt werden.
     & s = \text{Anzahl Schüler} \quad
 \end{align*}
 
-Beim Such-Array muss mit der Binären Suche jeweils die linke und rechte Begrenzung
+Beim Such-Array muss mit der binären Suche jeweils die linke und rechte Begrenzung
 ermittelt werden. Anschließend müssen alle Freunde bzw. Feinde des
 Schülers durchlaufen werden.
 
@@ -447,11 +447,11 @@ schneller ist.
 
 \section{Messwerte}
 
-Meine Messungen führte ich auf meinem Desktop PC und meinem Laptop (Plugged-In) durch.
+Meine Messungen führte ich auf meinem Desktop-PC und meinem Laptop (Plugged-In) durch.
 Auf jedem Computer nahm ich 2 Messreihen auf.
-Jede der 4 Anfragen and die 2 Datenstrukturen wurde jeweils 50-mal direkt hintereinander
+Jede der 4 Anfragen an die 2 Datenstrukturen wurde jeweils 50-mal direkt hintereinander
 ausgeführt.
-$SA$ beschreibt die Datenstruktur Such-Array. $G$ stetht für Graph-Datenstruktur.
+$SA$ beschreibt die Datenstruktur Such-Array. $G$ steht für Graph-Datenstruktur.
 Das $F$ beschreibt die Suche nach allen Freunden des Schülers Nr. 2.
 Das $H$ beschreibt die Suche nach allen Feindschaften (Hostilities) des Schülers Nr. 1.
 
@@ -569,28 +569,28 @@ Dies lässt sich vermutlich auf eine Speicherung von Werten im CPU-Cache zurück
 in dem nach den ersten Durchläufen Daten vorgehalten werden, was zu besseren
 Messergebnissen führt.
 Vereinzelt gibt es auch in diesen Bereichen bei PC und Laptop ausreißende Werte.
-Diese sind wahrscheinlich Mess-Anomalien, erzeugt durch einmahlige Lastspitzen.
-Diese könnten durch andere Prozesse auf dem Testsystem oder durch Hardwarebedingte 
+Diese sind wahrscheinlich Mess-Anomalien, erzeugt durch einmalige Lastspitzen.
+Diese könnten durch andere Prozesse auf dem Testsystem oder durch hardwarebedingte 
 Faktoren verursacht worden sein.
 Betrachtet man die 1. Messung, wo die Werte noch auseinanderliegen,
 so lässt sich nicht feststellen, dass keine der Datenstrukturen schneller
 ist als die anderen. Interessant ist bei diesen ersten Messwerten, dass die Messungen
 auf gleich strukturierte Daten (Freundschaften und Feindschaften) deutlich voneinander
-Abweichen. Auch für gleiche Datenstrukturen gibt es große abweichungen der
+Abweichen. Auch für gleiche Datenstrukturen gibt es große Abweichungen der
 benötigten Zeit.
 Nicht überraschend sind die abweichenden Niveaus von PC und Laptop,
 da bei CPUs mit unterschiedlichem Leistungsniveau logischerweise auch andere
 Performance-Werte erzeugt werden.
 Als dies lässt darauf schließen, dass es wahrscheinlich noch
-unbekannte Faktoren gibt, die Performance oder Messung beeinflussen.
-Durch Identifizieren und Elimieren dieser ließen sich vermutlich noch
+unbekannte Faktoren gibt, die die Performance oder Messung beeinflussen.
+Durch Identifizieren und Eliminieren dieser ließen sich vermutlich noch
 genauere und aussagekräftigere Messwerte gewinnen.
 
 \section{Beantwortung der Forschungsfrage}
 
 Abschließend lässt sich die Forschungsfrage insofern beantworten, als dass
 die Wahl der Datenstruktur in diesem Fall keinen Einfluss auf die Zugriffsgeschwindigkeit
-hat. Keine der Datenstrukturen scheint der anderen Überlegen, zumindest auf Basis
+hat. Keine der Datenstrukturen scheint der anderen überlegen, zumindest auf Basis
 der Messwerte.
 
 \section{Schwierigkeiten und Limitationen}
@@ -611,7 +611,7 @@ möglich, weil ich noch kein vollständiges Datenbanksystem hatte.
 
 Insgesamt konnte ich nicht so viele relevante Daten sammeln, würde das Projekt aber
 trotzdem als lehrreich bewerten. Mir persönlich hat es einen guten Einblick in
-Datenbanken und andere interessante Themen wie Socket Programmierung gegeben
+Datenbanken und andere interessante Themen wie Socket-Programmierung gegeben
 und ich konnte mehr über Datenstrukturen, C/C++ und gdb (GNU Debugger) lernen.
 
 \clearpage
@@ -624,7 +624,9 @@ und ich konnte mehr über Datenstrukturen, C/C++ und gdb (GNU Debugger) lernen.
 \section*{Links}
 
 \url{https://beej.us/guide/bgnet/html/}
+
 \url{https://db-engines.com/en/ranking}
+
 \url{https://www.amd.com/en/developer/uprof.html}
 
 \printbibliography[title={Literaturverzeichnis}]
