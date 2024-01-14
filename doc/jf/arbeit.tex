@@ -190,10 +190,8 @@ Binäres-Such-Array und eine Graph-Datenstruktur umsetzen.
 
 \subsection{Arten von Daten und Datenstrukturen}
 
-Um mir einen Überblick über das Themengebiet zu verschaffen, recherchierte ich zuerst
-im Internet. Dabei fand ich viele Informationen über die Arten von Daten und
-Datenbanksystemen, allerdings nichts Konkretes über Performance-Vergleiche dieser.
-Verschiedene Datenarten sind dabei räumliche, zeitliche, relationale (als Objekte modellierbare) und stark vernetzte Daten
+Verschiedene Datenarten sind dabei räumliche, zeitliche, relationale
+(als Objekte modellierbare) und stark vernetzte Daten
 \cite{no_sql_wikipedia} \cite{indian_overview}.
 
 \vspace*{0.3cm}
@@ -253,12 +251,38 @@ Also ein ganz normaler Entwicklungsprozess nach dem Zitat:
     \hspace*{0.2em} but because we thought they were going to be easy\guillemetleft
 \end{quote}
 
-Zu Beginn meines Projektes folgte ich dabei einem guten
-\href{https://beej.us/guide/bgnet/html/}{Tutorial}
-von Brian Hall, um Kommunikation über Linux Websockets umzusetzen, da Datenbanksysteme
+Zu Beginn meines Projektes setzte ich auch
+die Kommunikation über Linux Websockets um, da Datenbanksysteme
 eine Schnittstelle zu anderen Programmen benötigen.
 Da mein Datenbank-Backend allerdings nicht rechtzeitig ausgereift genug war, konnte
 ich diese Schnittstelle noch nicht in Kombination mit dem Rest testen.
+
+\subsection{Testdaten}
+
+Bei den Testdaten handelt es sich um eine fiktive Schülerschaft, in der jeder
+Schüler Freundschaften und Feindschaften hat. Diese Testdaten generierte ich mir
+mit einem Python Script und speicherte diese in einer CSV-Datei.
+Jeder Schüler hat dabei eine ID und einen Namen, der eine zufällige Zeichenkette ist.
+Anschließend sind bei jedem Schüler noch 100 Freund- und Feindschaften eingetragen.
+Jede dieser Beziehungen wird dabei durch die ID eines anderen Schülers beschrieben.
+Schüler $0$ ist z. B. mit Schüler $255777$ befreundet.
+
+\begin{lstlisting}
+0, eszycidpyopumzgd, 255777-14862-..., 204372-226894-...
+1, idixqgtnahamebxf, 233658-369416-..., 265451-355559-...
+2, digztyrwpvlifrgj, 104446-129174-..., 188986-42660-...
+...
+\end{lstlisting}
+
+% \clearpage
+
+\subsection{Teststruktur}
+
+Bei meinen Performance Tests verglich ich die Suchgeschwindigkeit der Datenstrukturen.
+Die gleichen Testdaten wurden in beide Datenstrukturen eingelesen und anschließend
+wurde gemessen, wie schnell auf einen bestimmten Teil der Daten jeweils zugegriffen
+werden kann. Im 1. Test sollten alle Freunde von Schüler Nr. 2 und im 2. Test alle
+Feindschaften von Schüler Nr. 1 gefunden werden.
 
 \subsection{Probleme bei B-Tree und Binary-Tree}
 
@@ -312,40 +336,15 @@ somit nicht umsetzen.
 \vspace*{0.5cm}
 
 Anschließend implementierte ich als Alternative dann einen AVL-Tree, eine sich selbst
-ausbalancierende Variante des Binären-Suchbaums. Beim anschließenden
+ausbalancierende Variante des binären Suchbaums. Beim anschließenden
 Konzeptionieren der Performance-Tests entdeckte ich allerdings noch einen
 beim Einfügen von Elementen auftretenden Fehler bei meinem AVL-Tree,
 weswegen ich mich spontan dazu entscheiden musste, auch diesen nicht zu testen.
 
-\subsection{Testdaten}
-
-Bei den Testdaten handelt es sich um eine fiktive Schülerschaft, in der jeder
-Schüler Freundschaften und Feindschaften hat. Diese Testdaten generierte ich mir
-mit einem Python Script und speicherte diese in einer CSV-Datei.
-Jeder Schüler hat dabei eine ID und einen Namen, der eine zufällige Zeichenkette ist.
-Anschließend sind bei jedem Schüler noch 100 Freund- und Feindschaften eingetragen.
-Jede dieser Beziehungen wird dabei durch die ID eines anderen Schülers beschrieben.
-Schüler $0$ ist z. B. mit Schüler $255777$ befreundet.
-
-\begin{lstlisting}
-0, eszycidpyopumzgd, 255777-14862-..., 204372-226894-...
-1, idixqgtnahamebxf, 233658-369416-..., 265451-355559-...
-2, digztyrwpvlifrgj, 104446-129174-..., 188986-42660-...
-...
-\end{lstlisting}
-
-\subsection{Teststruktur}
-
-Bei meinen Performance Tests verglich ich die Suchgeschwindigkeit der Datenstrukturen.
-Die gleichen Testdaten wurden in beide Datenstrukturen eingelesen und anschließend
-wurde gemessen, wie schnell auf einen bestimmten Teil der Daten jeweils zugegriffen
-werden kann. Im 1. Test sollten alle Freunde von Schüler Nr. 2 und im 2. Test alle
-Feindschaften von Schüler Nr. 1 gefunden werden.
-
 \subsection{Such-Array}
 
 Aufgrund der vorigen Schwierigkeiten testete ich nun nicht
-mit einem B-Tree oder Binary-Tree, sondern wendete die binäre Suche
+mit einem B-Tree oder Binary-Tree, sondern wandte die binäre Suche
 auf ein sortiertes Array an. Prinzipiell nutzen aber alle 3 Datenstrukturen die
 binäre Suche. Deswegen nahm ich an, dass alle 3 Datenstrukturen bei Daten im RAM
 ähnlich schnell Daten finden können.
@@ -464,7 +463,7 @@ $SA$ beschreibt die Datenstruktur Such-Array. $G$ steht für Graph-Datenstruktur
 Das $F$ beschreibt die Suche nach allen Freunden des Schülers Nr. 2.
 Das $H$ beschreibt die Suche nach allen Feindschaften (Hostilities) des Schülers Nr. 1.
 
-% \vspace*{1cm}
+\vspace*{1cm}
 
 \begin{figure}[H]
     \centering
@@ -584,7 +583,7 @@ Faktoren verursacht worden sein.
 Betrachtet man die 1. Messung, wo die Werte noch auseinanderliegen,
 so lässt sich nicht feststellen, dass keine der Datenstrukturen schneller
 ist als die anderen. Interessant ist bei diesen ersten Messwerten, dass die Messungen
-auf gleich strukturierte Daten (Freundschaften und Feindschaften) deutlich voneinander
+bei gleich strukturierten Daten (Freundschaften und Feindschaften) deutlich voneinander
 Abweichen. Auch für gleiche Datenstrukturen gibt es große Abweichungen der
 benötigten Zeit.
 Nicht überraschend sind die abweichenden Niveaus von PC und Laptop,
