@@ -261,11 +261,11 @@ ich diese Schnittstelle noch nicht in Kombination mit dem Rest testen.
 \subsection{Testdaten}
 
 Bei den Testdaten handelt es sich um eine fiktive Schülerschaft, in der jeder
-Schüler Freundschaften und Feindschaften hat. Diese Testdaten generierte ich mir
+Schüler Freundschaften und Kursbelegungen hat. Diese Testdaten generierte ich mir
 mit einem Python Script und speicherte diese in einer CSV-Datei.
 Jeder Schüler hat dabei eine ID und einen Namen, der eine zufällige Zeichenkette ist.
-Anschließend sind bei jedem Schüler noch 100 Freund- und Feindschaften eingetragen.
-Jede dieser Beziehungen wird dabei durch die ID eines anderen Schülers beschrieben.
+Anschließend sind bei jedem Schüler noch 100 Freundschaften und Kursbelegungen eingetragen.
+Jede dieser Beziehungen wird dabei durch die ID eines anderen Schülers bzw. Kurses beschrieben.
 Schüler $0$ ist z. B. mit Schüler $255777$ befreundet.
 
 \begin{lstlisting}
@@ -283,7 +283,7 @@ Bei meinen Performance Tests verglich ich die Suchgeschwindigkeit der Datenstruk
 Die gleichen Testdaten wurden in beide Datenstrukturen eingelesen und anschließend
 wurde gemessen, wie schnell auf einen bestimmten Teil der Daten jeweils zugegriffen
 werden kann. Im 1. Test sollten alle Freunde von Schüler Nr. 2 und im 2. Test alle
-Feindschaften von Schüler Nr. 1 gefunden werden.
+Kursbelegungen von Schüler Nr. 1 gefunden werden.
 
 \subsection{Probleme bei B-Tree und Binary-Tree}
 
@@ -350,7 +350,7 @@ auf ein sortiertes Array an. Prinzipiell nutzen aber alle 3 Datenstrukturen die
 binäre Suche. Deswegen nahm ich an, dass alle 3 Datenstrukturen bei Daten im RAM
 ähnlich schnell Daten finden können.
 Die Testdaten sind in diesem Fall auf 3 Such-Arrays (vgl. Tabellen)
-aufgeteilt, jeweils eine für Schüler, Freundschaften und Feindschaften.
+aufgeteilt, jeweils eine für Schüler, Freundschaften und Kursbelegungen.
 
 \begin{table}[H]
     \centering
@@ -365,16 +365,16 @@ aufgeteilt, jeweils eine für Schüler, Freundschaften und Feindschaften.
     \qquad
     \begin{tabular}{|l|l|}
         \hline
-        Schüler\_1\_ID & Schüler\_2\_ID \\ \hline
+        Schüler\_1\_ID & Kurs\_ID \\ \hline
         7              & 629            \\ \hline
         7              & 762            \\ \hline
         7              & 229            \\ \hline
         7              & 29435          \\ \hline
     \end{tabular}
-    \caption{\textbf{Tabellenausschnitte Freundschaften/Feindschaften}}
+    \caption{\textbf{Tabellenausschnitte Freundschaften/Kursbelegungen}}
 \end{table}
 
-Um alle Freunde/Feinde eines Schülers zu finden, müssen in
+Um alle Freunde/Kursbelegungen eines Schülers zu finden, müssen in
 den als Assoziationstabellen fungierenden, sortierten Such-Arrays
 alle Datensätze zwischen dem kleinstmöglichen und größtmöglichen Wert
 gefunden werten. Beispielsweise für den Schüler $5$ alles zwischen (inklusiv) den Datensätzen
@@ -395,9 +395,9 @@ Zeit alle gesuchten Datensätze ausgelesen werden.
 
 Bei meiner Implementierung einer Graph-Datenstruktur sind in jedem Node
 die Daten und die Verbindungen zu anderen Nodes gespeichert.
-Um alle Freundschaften oder Feindschaften zu erhalten, muss nur über diese
-Daten iteriert werden und man erhält schnell die Daten der befreundeten oder
-befeindeten Schüler. Die Art der Verbindung (Freund/Feind) kann dabei durch
+Um alle Freundschaften oder Kursbelegungen zu erhalten, muss nur über diese
+Daten iteriert werden und man erhält schnell die Daten der befreundeten Schüler und der
+belegten Kurse. Die Art der Verbindung (Freund/Kursbelegung) kann dabei durch
 das $link\_schema$ festgelegt werden.
 
 \begin{figure}[H]
@@ -405,15 +405,15 @@ das $link\_schema$ festgelegt werden.
     \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=3cm,
             thick,main node/.style={circle,draw,font=\sffamily\Large\bfseries}]
 
-        \node[main node] (1) {1};
-        \node[main node] (2) [below left of=1] {2};
-        \node[main node] (3) [below right of=1] {3};
+        \node[main node] (1) {S 1};
+        \node[main node] (2) [below left of=1] {S 2};
+        \node[main node] (3) [below right of=1] {K 1};
 
         \path[every node/.style={font=\sffamily\small}]
         (1) edge [bend right] node[left] {Freund} (2)
         (2) edge node [right] {Freund} (1)
-        edge node {Feind} (3)
-        (3) edge [bend right] node[right] {Feind} (1);
+        edge node {Kurs} (3)
+        (1) edge [bend left] node[right] {Kurs} (3);
     \end{tikzpicture}
     \caption{\textbf{Graph mit Beziehungen zwischen Schülern}}
 \end{figure}
@@ -430,14 +430,14 @@ das $link\_schema$ festgelegt werden.
 
 \begin{align*}
     & f_g = \text{Anzahl Freundschaften} \quad
-    F_g = \text{Anzahl Feindschaften} \\ 
+    K_g = \text{Kursbelegungen} \\ 
     & f = \text{Anzahl Freunde eines Schülers} \quad
-    F = \text{Anzahl Feinde eines Schülers} \\
+    K = \text{Anzahl Kurse eines Schülers} \\
     & s = \text{Anzahl Schüler} \quad
 \end{align*}
 
 Beim Such-Array muss mit der binären Suche jeweils die linke und rechte Begrenzung
-ermittelt werden. Anschließend müssen alle Freunde bzw. Feinde des
+ermittelt werden. Anschließend müssen alle Freunde bzw. Kursbelegungen des
 Schülers durchlaufen werden.
 
 \begin{equation*}
@@ -445,10 +445,10 @@ Schülers durchlaufen werden.
 \end{equation*}
 
 Bei der Graph-Datenstruktur müssen alle Verbindungen durchlaufen werden, also
-die Summe der Vebindungen aus Freund- und Feindschaften.
+die Summe der Verbindungen aus Freundschaften und Kursbelegungen.
 
 \begin{equation*}
-    O(f + F)
+    O(f + K)
 \end{equation*}
 
 Anhand der Komplexitäten lässt sich erwarten, dass die Graph-Datenstruktur deutlich
@@ -462,7 +462,7 @@ Jede der 4 Anfragen an die 2 Datenstrukturen wurde jeweils 50-mal direkt hintere
 ausgeführt.
 $SA$ beschreibt die Datenstruktur Such-Array. $G$ steht für Graph-Datenstruktur.
 Das $F$ beschreibt die Suche nach allen Freunden des Schülers Nr. 2.
-Das $H$ beschreibt die Suche nach allen Feindschaften (Hostilities) des Schülers Nr. 1.
+Das $H$ beschreibt die Suche nach allen Kursbelegungen des Schülers Nr. 1.
 
 \vspace*{1cm}
 
