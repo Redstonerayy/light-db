@@ -5,6 +5,12 @@
 # dependencies
 /thirdparty
 
+# keys
+/tls/*.pem
+
+# data
+**/*.csv
+
 # editors
 # code
 /.vscode
@@ -12,12 +18,3 @@
 # intellij
 /.idea
 /cmake-build-debug
-
-# keys
-/res/*.pem
-
-# temp
-/sslecho
-
-# data
-**/*.csv
