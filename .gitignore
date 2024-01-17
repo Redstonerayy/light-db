@@ -1,6 +1,6 @@
 # build
-/build
-/run
+**/build
+**/run
 
 # dependencies
 /thirdparty

@@ -16,7 +16,7 @@
 std::vector<Row> read_csv(std::string filepath);
 
 int main() {
-    std::vector<Row> rows = read_csv("./run/records.csv");
+    std::vector<Row> rows = read_csv("./bench/records.csv");
 
     {
         Table* students;
