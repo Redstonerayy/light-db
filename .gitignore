@@ -20,4 +20,4 @@
 /sslecho
 
 # data
-/src/bench/records.csv
+**/*.csv
