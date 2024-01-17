@@ -18,7 +18,7 @@ target_include_directories(test PRIVATE ${INCLUDE_DIRS})
 set_property(TARGET test PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 
 # ------------ bench ------------ #
-FILE(GLOB BENCH_SOURCE_FILES ../src/database/*.cpp bench/*.cpp test/printing.cpp)
+FILE(GLOB BENCH_SOURCE_FILES ../src/database/*.cpp bench/*.cpp)
 add_executable(bench ${BENCH_SOURCE_FILES})
 target_include_directories(bench PRIVATE ${INCLUDE_DIRS})
 set_property(TARGET bench PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})

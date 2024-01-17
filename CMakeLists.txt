@@ -29,4 +29,3 @@ add_executable(ldc ${CLIENT_SOURCE_FILES})
 target_include_directories(ldc PRIVATE ${INCLUDE_DIRS})
 target_link_libraries(ldc ${LIBS})
 set_property(TARGET ldc PROPERTY CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-

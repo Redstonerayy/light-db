@@ -1,5 +1,8 @@
-#include <string>
+#include <unistd.h>
+#include <fcntl.h>
+
 #include <iostream>
+#include <string>
 
 #include "client.hpp"
 #include "client_constants.hpp"
@@ -10,18 +13,18 @@ int main(int argc, char *argv[]) {
     /*------------ authenticate ------------*/  // skip for now, TODO openssl, secret
     Client client("127.0.0.1", PORT);
 
-    std::string query_string;
+    std::string query_string = "";
     std::cout << "lightdb>";
     while (true) {
-        if(!getline(std::cin, query_string, '\n'))
-            continue;
-        
+        if (std::getline(std::cin, query_string, '\n').fail()) continue;
+
         if (check_query_validity(query_string)) {
             client.Query(query_string);
             client.Result();
         } else {
             std::cout << "Error in Query String!\n";
         }
+        std::cout << query_string << "\n";
         std::cout << "lightdb>";
     }
 
