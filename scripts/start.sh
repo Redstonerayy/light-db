@@ -1,2 +1,0 @@
-cd ./run
-./lightdb s

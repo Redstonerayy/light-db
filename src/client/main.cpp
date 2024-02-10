@@ -1,5 +1,5 @@
-#include <unistd.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 #include <iostream>
 #include <string>
@@ -15,12 +15,18 @@ int main(int argc, char *argv[]) {
 
     std::string query_string = "";
     std::cout << "lightdb>";
+    std::cin.exceptions(std::ios_base::failbit);
     while (true) {
-        if (std::getline(std::cin, query_string, '\n').fail()) continue;
+        try {
+            std::getline(std::cin, query_string, '\n');
+        } catch (std::ios_base::failure &e) {
+            std::cout << e.what() << "\n";
+        }
 
         if (check_query_validity(query_string)) {
-            client.Query(query_string);
-            client.Result();
+            printf("Start Query\n");
+            // client.Query(query_string);
+            // client.Result();
         } else {
             std::cout << "Error in Query String!\n";
         }

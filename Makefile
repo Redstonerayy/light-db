@@ -15,7 +15,7 @@ start: build
 	cp ./tls/cert.pem ./run/tls/cert.pem
 	cp ./tls/key.pem ./run/tls/key.pem
 	cp ./build/Release/lightdb ./run/lightdb
-	./scripts/start.sh
+	./run/lightdb
 
 client: build
 	mkdir -p ./run
