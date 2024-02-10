@@ -10,6 +10,7 @@
 
 # data
 **/*.csv
+/testing/bench/results
 
 # editors
 # code

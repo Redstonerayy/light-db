@@ -1,8 +1,9 @@
+cd ./testing
 make build
-cd ./src/bench
+cd ./bench
+echo 'Generating Data'
 python data.py
-cd ../../
-mkdir -p ./run
-cp ./build/Release/bench ./run/bench
-cp ./src/bench/records.csv ./run/records.csv
-./run/bench > ./results/benchmarks.txt
+mkdir -p ./results
+cd ..
+echo 'Running ...'
+./build/Debug/bench > ./bench/results/benchmarks.txt
