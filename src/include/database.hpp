@@ -15,4 +15,5 @@ public:
     std::string execute_query(const std::string &query_string);
 
     Database(std::string db_path);
+    ~Database();
 };

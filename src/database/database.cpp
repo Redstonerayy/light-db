@@ -12,6 +12,10 @@ Database::Database(std::string db_path) {
     open_b_tree(this->btree, db_path);
 }
 
+Database::~Database(){
+    this->btree.fs.close();
+}
+
 std::string Database::process_connection(Connection *con) {
     std::string query = this->extract_query_from_connection(con);
     std::string query_result = this->execute_query(query);
