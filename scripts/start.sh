@@ -1,2 +1,2 @@
 cd ./run
-./lightdb
+gdb -q -x ../debug/debug.gdb ./lightdb

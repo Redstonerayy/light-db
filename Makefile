@@ -11,10 +11,8 @@ build:
 
 start: build
 	mkdir -p ./run
-	mkdir -p ./run/tls
-	cp ./tls/cert.pem ./run/tls/cert.pem
-	cp ./tls/key.pem ./run/tls/key.pem
-	cp ./build/Release/lightdb ./run/lightdb
+	cp ./build/Debug/lightdb ./run/lightdb
+	rm -rf ./run/lightdb.db
 	./scripts/start.sh
 
 client: build
