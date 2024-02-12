@@ -63,10 +63,8 @@ void open_b_tree(BTree& btree, std::string filepath) {
     btree.fs = std::fstream(filepath, std::ios::in | std::ios::out | std::ios::binary);
     std::fstream* fs = &btree.fs;
 
-    unsigned long data_1 = 0x0100100;
-    fs->write(reinterpret_cast<char*>(&data_1), sizeof(data_1));
-    unsigned long data_2 = 0x0400000;
-    fs->write(reinterpret_cast<char*>(&data_2), 1);
+    char data[] = {1, 0, 1, 0, 4};
+    fs->write(data, sizeof(char) * 5);
 
     fs->seekg(0);
 
@@ -76,7 +74,6 @@ void open_b_tree(BTree& btree, std::string filepath) {
         fs->read(&buf, 1);
         if(fs->eof()) exit(EXIT_FAILURE); 
         if(buf == 0) break;
-        std::cout << buf << "\n";
         key_ids.emplace_back(buf);
     }
 
@@ -85,14 +82,13 @@ void open_b_tree(BTree& btree, std::string filepath) {
         fs->read(&buf, 1);
         if(fs->eof()) exit(EXIT_FAILURE); 
         if(buf == 0) break;
-        std::cout << buf << "\n";
         data_ids.emplace_back(buf);
     }
 
     fs->read(&buf, 1);
     if(fs->eof()) exit(EXIT_FAILURE); 
     if(buf < 2) exit(EXIT_FAILURE);
-    std::cout << buf << "\n";
+    std::cout << (int)buf << "\n";
     int page_k = buf;
 
     int max_page_size = 4 + 4 + 8;
