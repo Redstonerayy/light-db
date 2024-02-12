@@ -11,9 +11,15 @@ build:
 
 start: build
 	mkdir -p ./run
-	cp ./build/Debug/lightdb ./run/lightdb
+	cp ./build/Release/lightdb ./run/lightdb
 	rm -rf ./run/lightdb.db
 	./scripts/start.sh
+
+debug: build
+	mkdir -p ./run
+	cp ./build/Debug/lightdb ./run/lightdb
+	rm -rf ./run/lightdb.db
+	./scripts/debug.sh
 
 client: build
 	mkdir -p ./run
