@@ -10,6 +10,9 @@ Database::Database(std::string db_path) {
     this->db_path = db_path;
     this->btree = BTree{};
     b_tree_open(this->btree, db_path);
+    int key = 4;
+    int data
+    b_tree_insert_record(this->btree, );
 }
 
 Database::~Database(){

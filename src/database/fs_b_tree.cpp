@@ -216,6 +216,7 @@ bool b_tree_insert_record(BTree& btree, void* key, void* data) {
         memcpy(buf + 0 + btree.key_size, data, btree.data_size);
         Page* new_root = new Page{btree.page_k * 2, 1, -1, nullptr};
         b_tree_write_page(btree, new_root, 0);
+        return true;
     }
 
     // search for the key
