@@ -11,8 +11,8 @@ Database::Database(std::string db_path) {
     this->btree = BTree{};
     b_tree_open(this->btree, db_path);
     int key = 4;
-    int data
-    b_tree_insert_record(this->btree, );
+    int data = 53;
+    b_tree_insert_record(this->btree, &key, &data);
 }
 
 Database::~Database(){

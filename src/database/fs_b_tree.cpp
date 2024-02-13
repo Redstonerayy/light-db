@@ -93,7 +93,7 @@ void b_tree_open(BTree& btree, std::string filepath) {
 
     fs->read(&buf, 1);
     if (fs->eof()) exit_m("Can't read page size (k)\n");
-    if (buf < 1) exit_m("Page size to small");
+    if (buf < 2) exit_m("Page size to small");
     int page_k = buf;
 
     int page_size = 4 + 4 + 8;
@@ -123,7 +123,6 @@ void b_tree_open(BTree& btree, std::string filepath) {
 Page* b_tree_fetch_page(BTree& btree, int position) {
     std::fstream* fs = &btree.fs;
     fs->seekg(btree.page_offset + position * btree.page_size);
-
     char buf[btree.page_size];
 
     fs->read(buf, 4);
@@ -148,6 +147,7 @@ Page* b_tree_fetch_page(BTree& btree, int position) {
 
 void b_tree_write_page(BTree &btree, Page* page, int position){
     std::fstream* fs = &btree.fs;
+    fs->clear();
     fs->seekp(btree.page_offset);
 
     fs->write((char*)&page->size, 4);
@@ -155,6 +155,9 @@ void b_tree_write_page(BTree &btree, Page* page, int position){
     fs->write((char*)&page->parent_page, 8);
     fs->write((char*)page->page_data, btree.page_data_size);
     if(fs->fail()) exit_m("Page write failed");
+    fs->flush();
+    if(fs->fail()) exit_m("Writebuffer Flush failed");
+    
 }
 
 enum { LEFT_LARGER = 1, RIGHT_LARGER, EQUAL };
@@ -212,9 +215,10 @@ bool b_tree_insert_record(BTree& btree, void* key, void* data) {
     Page* root = b_tree_fetch_page(btree, 0);
     if (root == nullptr){
         char buf[btree.page_data_size];
-        memcpy(buf + 0, key, btree.key_size);
-        memcpy(buf + 0 + btree.key_size, data, btree.data_size);
-        Page* new_root = new Page{btree.page_k * 2, 1, -1, nullptr};
+        memset(buf, 0, btree.page_data_size);
+        memcpy(buf + 8, key, btree.key_size);
+        memcpy(buf + 8 + btree.key_size, data, btree.data_size);
+        Page* new_root = new Page{btree.page_k, 1, -1, buf};
         b_tree_write_page(btree, new_root, 0);
         return true;
     }
