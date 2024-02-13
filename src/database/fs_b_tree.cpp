@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <cstring>
 
 #include "db_util.hpp"
 
@@ -21,9 +22,9 @@
 // Page structure on disk
 <4 Bytes> size
 <4 Bytes> fill
-<8 Bytes> position of parent page (0 for root)
+<8 Bytes> number of parent page (-1 for root)
 <Page data>
-    <8 Bytes> page pointer
+    <8 Bytes> page number (-1 for uninitialized)
     <n Bytes> key
     <n Bytes> record to previous key
     ...
@@ -92,7 +93,7 @@ void b_tree_open(BTree& btree, std::string filepath) {
 
     fs->read(&buf, 1);
     if (fs->eof()) exit_m("Can't read page size (k)\n");
-    if (buf < 2) exit_m("Page size to small");
+    if (buf < 1) exit_m("Page size to small");
     int page_k = buf;
 
     int page_size = 4 + 4 + 8;
@@ -105,15 +106,17 @@ void b_tree_open(BTree& btree, std::string filepath) {
         data_size += id_to_byte_size(id);
     }
     int entry_size = key_size + data_size;
-    page_size += entry_size * page_k + entry_size * (page_k + 1);
+    page_size += entry_size * page_k + 8 * (page_k + 1);
 
     int page_starting_offset = fs->tellg();
 
     btree.key_ids = key_ids;
     btree.data_ids = data_ids;
+    btree.page_k = page_k;
     btree.key_size = key_size;
     btree.data_size = data_size;
     btree.page_size = page_size;
+    btree.page_data_size = page_size - 16;
     btree.page_offset = page_starting_offset;
 }
 
@@ -141,6 +144,17 @@ Page* b_tree_fetch_page(BTree& btree, int position) {
     p->parent_page = parent;
     p->page_data = buf;
     return p;
+}
+
+void b_tree_write_page(BTree &btree, Page* page, int position){
+    std::fstream* fs = &btree.fs;
+    fs->seekp(btree.page_offset);
+
+    fs->write((char*)&page->size, 4);
+    fs->write((char*)&page->fill, 4);
+    fs->write((char*)&page->parent_page, 8);
+    fs->write((char*)page->page_data, btree.page_data_size);
+    if(fs->fail()) exit_m("Page write failed");
 }
 
 enum { LEFT_LARGER = 1, RIGHT_LARGER, EQUAL };
@@ -196,6 +210,16 @@ int comp_keys(void* l_key, void* r_key, std::vector<int> keys_ids) {
 
 bool b_tree_insert_record(BTree& btree, void* key, void* data) {
     Page* root = b_tree_fetch_page(btree, 0);
-    if (root == nullptr) return false;
+    if (root == nullptr){
+        char buf[btree.page_data_size];
+        memcpy(buf + 0, key, btree.key_size);
+        memcpy(buf + 0 + btree.key_size, data, btree.data_size);
+        Page* new_root = new Page{btree.page_k * 2, 1, -1, nullptr};
+        b_tree_write_page(btree, new_root, 0);
+    }
+
+    // search for the key
+    // insert key
+    // split/balance if page is full
     return false;
 }

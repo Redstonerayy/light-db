@@ -7,9 +7,9 @@
 #include "structs.hpp"
 
 struct Page {
-    std::uint32_t size;
-    std::uint32_t fill;
-    std::uint64_t parent_page;
+    int size;
+    int fill;
+    long parent_page;
     void* page_data;
 };
 
@@ -18,9 +18,11 @@ struct BTree {
     std::fstream fs;
     std::vector<int> key_ids;
     std::vector<int> data_ids;
+    int page_k;
     int key_size;
     int data_size;
     int page_size;
+    int page_data_size;
     int page_offset;
 };
 
