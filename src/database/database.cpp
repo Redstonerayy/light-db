@@ -9,7 +9,7 @@
 Database::Database(std::string db_path) {
     this->db_path = db_path;
     this->btree = BTree{};
-    open_b_tree(this->btree, db_path);
+    b_tree_open(this->btree, db_path);
 }
 
 Database::~Database(){

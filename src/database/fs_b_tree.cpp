@@ -145,45 +145,51 @@ Page* b_tree_fetch_page(BTree& btree, int position) {
 
 enum { LEFT_LARGER = 1, RIGHT_LARGER, EQUAL };
 
-int int_compare(void* l_key, void* r_key, int offset) {
-    int l = *((int*)(l_key + offset));
-    int r = *((int*)(r_key + offset));
+struct C_Res {
+    int res;
+    int offset_add;
+};
 
-    if (l > r) return LEFT_LARGER;
-    if (l < r) return RIGHT_LARGER;
-    if (l == r) return EQUAL;
+C_Res int_compare(void* l_key, void* r_key, int offset) {
+    int l = *((int*)((char*)l_key + offset));
+    int r = *((int*)((char*)r_key + offset));
+
+    if (l > r) return {LEFT_LARGER, 4};
+    else if (l < r) return {RIGHT_LARGER, 4};
+    else return {EQUAL, 4};
 }
 
-int long_compare(void* l_key, void* r_key, int offset) {
-    long l = *((long*)(l_key + offset));
-    long r = *((long*)(r_key + offset));
+C_Res long_compare(void* l_key, void* r_key, int offset) {
+    long l = *((long*)((char*)l_key + offset));
+    long r = *((long*)((char*)r_key + offset));
 
-    if (l > r) return LEFT_LARGER;
-    if (l < r) return RIGHT_LARGER;
-    if (l == r) return EQUAL;
+    if (l > r) return {LEFT_LARGER, 8};
+    else if (l < r) return {RIGHT_LARGER, 8};
+    else return {EQUAL, 8};
 }
 
-int char_compare(void* l_key, void* r_key, int offset, int id) {
+C_Res char_compare(void* l_key, void* r_key, int offset, int id) {
     int length = id_to_byte_size(id);
     char* l_p = (char*)l_key;
     char* r_p = (char*)r_key;
 
     for (int i = 0; i < length; ++i) {
         if (l_p[offset + i] == r_p[offset + i]) continue;
-        if (l_p[offset + i] > r_p[offset + i]) return LEFT_LARGER;
-        if (l_p[offset + i] < r_p[offset + i]) return RIGHT_LARGER;
+        if (l_p[offset + i] > r_p[offset + i]) return {LEFT_LARGER, length};
+        if (l_p[offset + i] < r_p[offset + i]) return {RIGHT_LARGER, length};
     }
-    return EQUAL;
+    return {EQUAL, length};
 }
 
 int comp_keys(void* l_key, void* r_key, std::vector<int> keys_ids) {
     int char_offset = 0;
     for (const int& id : keys_ids) {
-        int res;
+        C_Res res;
         if (id == 1 || id == 6 || id == 7) res = int_compare(l_key, r_key, char_offset);
         if (id == 3 || id == 4 || id == 5) res = char_compare(l_key, r_key, char_offset, id);
         if (id == 2) res = long_compare(l_key, r_key, char_offset);
-        if (res != EQUAL) return res;
+        if (res.res != EQUAL) return res.res;
+        char_offset += res.offset_add;
     }
     return EQUAL;
 }
@@ -191,4 +197,5 @@ int comp_keys(void* l_key, void* r_key, std::vector<int> keys_ids) {
 bool b_tree_insert_record(BTree& btree, void* key, void* data) {
     Page* root = b_tree_fetch_page(btree, 0);
     if (root == nullptr) return false;
+    return false;
 }
