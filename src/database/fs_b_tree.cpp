@@ -249,7 +249,20 @@ bool b_tree_insert_record(BTree& btree, void* key, void* data) {
     }
 
     if (root->fill == root->size) {
-        // create new child page
+        // split page
+        // Page* new_page = new Page{};
+        // new_page->size = btree.page_k;
+        // new_page->fill = btree.page_k / 2 + 1;
+        // new_page->parent_page = 0;
+        
+        // char buf[btree.page_data_size];
+        // memset(buf, 0, btree.page_data_size);
+        // memcpy(buf + 8, key, btree.key_size);
+        // memcpy(buf + 8 + btree.key_size, data, btree.data_size);
+        // Page* new_root = new Page{btree.page_k, 1, -1, buf};
+        // b_tree_write_page(btree, new_root, 0);
+        // return true;
+        return false;
     } else {
         if (left > root->fill - 1) {
             memcpy(start + step * left, key, btree.key_size);
