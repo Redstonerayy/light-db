@@ -123,7 +123,7 @@ void b_tree_open(BTree& btree, std::string filepath) {
 Page* b_tree_fetch_page(BTree& btree, int position) {
     std::fstream* fs = &btree.fs;
     fs->seekg(btree.page_offset + position * btree.page_size);
-    char buf[btree.page_size];
+    char buf[btree.page_data_size];
 
     fs->read(buf, 4);
     if (fs->eof()) return nullptr;
@@ -135,7 +135,8 @@ Page* b_tree_fetch_page(BTree& btree, int position) {
     if (fs->eof()) return nullptr;
     long parent = *((long*)buf);
 
-    fs->read(buf, btree.page_size);
+    memset(buf, 0, btree.page_data_size);
+    fs->read(buf, btree.page_data_size);
 
     Page* p = new Page;
     p->size = size;
@@ -170,6 +171,7 @@ struct C_Res {
 C_Res int_compare(void* l_key, void* r_key, int offset) {
     int l = *((int*)((char*)l_key + offset));
     int r = *((int*)((char*)r_key + offset));
+    std::cout << "l " << l << " r " << r << "\n";
 
     if (l > r) return {LEFT_LARGER, 4};
     else if (l < r) return {RIGHT_LARGER, 4};
@@ -223,7 +225,46 @@ bool b_tree_insert_record(BTree& btree, void* key, void* data) {
         return true;
     }
 
-    // search for the key
+    char* start = (char*)root->page_data + 8;
+    int step = btree.key_size + btree.data_size + 8;
+    
+    int left = 0;
+    int right = root->fill;
+    int m = (left + right) / 2;
+    while(true){
+        std::cout << "m: " << m << "\n";
+        int res = comp_keys(key, start + step * m, btree.key_ids);
+        if(res == EQUAL){
+            return false;
+        } else if(res == LEFT_LARGER){
+            left = m + 1;
+            std::cout << "l\n";
+        } else if(res == RIGHT_LARGER){
+            right = m - 1;
+            std::cout << "r\n";
+        }
+        std::cout << "m: " << m << "\n";
+        m = (left + right) / 2;
+        std::cout << "m: " << m << "\n";
+        if(left > right) break;
+    }
+
+
+    std::cout << "c m: " << m << "\n";
+    if(m > root->fill){
+        if(root->fill == root->size){
+            // split needed
+        } else {
+            memcpy(start + step * m, key, btree.key_size);
+            memcpy(start + step * m + btree.key_size, data, btree.data_size);
+            ++root->fill;
+            b_tree_write_page(btree, root, 0);
+            return true;
+        }
+    } else {
+        // shift needed
+    }
+
     // insert key
     // split/balance if page is full
     return false;

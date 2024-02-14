@@ -1,6 +1,11 @@
-break fs_b_tree.cpp:154
-break fs_b_tree.cpp:155
-break fs_b_tree.cpp:156
-break fs_b_tree.cpp:157
-break fs_b_tree.cpp:158
+break fs_b_tree.cpp:233
+break fs_b_tree.cpp:202
+break fs_b_tree.cpp:171
 start
+continue
+x /4bx start + step * m
+continue
+x /4bx r_key
+continue
+x /4bx r_key
+continue
