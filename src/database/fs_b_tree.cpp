@@ -1,10 +1,10 @@
 #include "fs_b_tree.hpp"
 
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <cstring>
 
 #include "db_util.hpp"
 
@@ -146,7 +146,7 @@ Page* b_tree_fetch_page(BTree& btree, int position) {
     return p;
 }
 
-void b_tree_write_page(BTree &btree, Page* page, int position){
+void b_tree_write_page(BTree& btree, Page* page, int position) {
     std::fstream* fs = &btree.fs;
     fs->clear();
     fs->seekp(btree.page_offset);
@@ -155,10 +155,9 @@ void b_tree_write_page(BTree &btree, Page* page, int position){
     fs->write((char*)&page->fill, 4);
     fs->write((char*)&page->parent_page, 8);
     fs->write((char*)page->page_data, btree.page_data_size);
-    if(fs->fail()) exit_m("Page write failed");
+    if (fs->fail()) exit_m("Page write failed");
     fs->flush();
-    if(fs->fail()) exit_m("Writebuffer Flush failed");
-    
+    if (fs->fail()) exit_m("Writebuffer Flush failed");
 }
 
 enum { LEFT_LARGER = 1, RIGHT_LARGER, EQUAL };
@@ -172,18 +171,24 @@ C_Res int_compare(void* l_key, void* r_key, int offset) {
     int l = *((int*)((char*)l_key + offset));
     int r = *((int*)((char*)r_key + offset));
 
-    if (l > r) return {LEFT_LARGER, 4};
-    else if (l < r) return {RIGHT_LARGER, 4};
-    else return {EQUAL, 4};
+    if (l > r)
+        return {LEFT_LARGER, 4};
+    else if (l < r)
+        return {RIGHT_LARGER, 4};
+    else
+        return {EQUAL, 4};
 }
 
 C_Res long_compare(void* l_key, void* r_key, int offset) {
     long l = *((long*)((char*)l_key + offset));
     long r = *((long*)((char*)r_key + offset));
 
-    if (l > r) return {LEFT_LARGER, 8};
-    else if (l < r) return {RIGHT_LARGER, 8};
-    else return {EQUAL, 8};
+    if (l > r)
+        return {LEFT_LARGER, 8};
+    else if (l < r)
+        return {RIGHT_LARGER, 8};
+    else
+        return {EQUAL, 8};
 }
 
 C_Res char_compare(void* l_key, void* r_key, int offset, int id) {
@@ -214,7 +219,7 @@ int comp_keys(void* l_key, void* r_key, std::vector<int> keys_ids) {
 
 bool b_tree_insert_record(BTree& btree, void* key, void* data) {
     Page* root = b_tree_fetch_page(btree, 0);
-    if (root == nullptr){
+    if (root == nullptr) {
         char buf[btree.page_data_size];
         memset(buf, 0, btree.page_data_size);
         memcpy(buf + 8, key, btree.key_size);
@@ -226,35 +231,44 @@ bool b_tree_insert_record(BTree& btree, void* key, void* data) {
 
     char* start = (char*)root->page_data + 8;
     int step = btree.key_size + btree.data_size + 8;
-    
+
     int left = 0;
     int right = root->fill - 1;
     int m = (left + right) / 2;
-    while(true){
+    while (true) {
         int res = comp_keys(key, start + step * m, btree.key_ids);
-        if(res == EQUAL){
+        if (res == EQUAL) {
             return false;
-        } else if(res == LEFT_LARGER){
+        } else if (res == LEFT_LARGER) {
             left = m + 1;
-        } else if(res == RIGHT_LARGER){
+        } else if (res == RIGHT_LARGER) {
             right = m - 1;
         }
         m = (left + right) / 2;
-        if(left > right) break;
+        if (left > right) break;
     }
 
-    if(left > root->fill - 1){
-        if(root->fill == root->size){
-            // split needed
+    if (root->fill == root->size) {
+        // create new child page
+    } else {
+        if (left > root->fill - 1) {
+            memcpy(start + step * left, key, btree.key_size);
+            memcpy(start + step * left + btree.key_size, data, btree.data_size);
+            ++root->fill;
+            b_tree_write_page(btree, root, 0);
+            return true;
+
         } else {
+            for(int i = root->fill - 1; i >= left; --i){
+                memcpy(start + step * (i + 1), start + step * i, btree.key_size);
+                memcpy(start + step * (i + 1) + btree.key_size, start + step * i + btree.key_size, btree.data_size);
+            }
             memcpy(start + step * left, key, btree.key_size);
             memcpy(start + step * left + btree.key_size, data, btree.data_size);
             ++root->fill;
             b_tree_write_page(btree, root, 0);
             return true;
         }
-    } else {
-        // shift needed
     }
 
     // insert key
