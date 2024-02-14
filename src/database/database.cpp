@@ -16,12 +16,12 @@ Database::Database(std::string db_path) {
     key = 5;
     data = 54;
     b_tree_insert_record(this->btree, &key, &data);
-    // key = 6;
-    // data = 55;
-    // b_tree_insert_record(this->btree, &key, &data);
-    // key = 7;
-    // data = 56;
-    // b_tree_insert_record(this->btree, &key, &data);
+    key = 6;
+    data = 55;
+    b_tree_insert_record(this->btree, &key, &data);
+    key = 7;
+    data = 56;
+    b_tree_insert_record(this->btree, &key, &data);
 }
 
 Database::~Database(){

@@ -123,7 +123,7 @@ void b_tree_open(BTree& btree, std::string filepath) {
 Page* b_tree_fetch_page(BTree& btree, int position) {
     std::fstream* fs = &btree.fs;
     fs->seekg(btree.page_offset + position * btree.page_size);
-    char buf[btree.page_data_size];
+    char* buf = (char*)malloc(btree.page_data_size);
 
     fs->read(buf, 4);
     if (fs->eof()) return nullptr;
@@ -171,7 +171,6 @@ struct C_Res {
 C_Res int_compare(void* l_key, void* r_key, int offset) {
     int l = *((int*)((char*)l_key + offset));
     int r = *((int*)((char*)r_key + offset));
-    std::cout << "l " << l << " r " << r << "\n";
 
     if (l > r) return {LEFT_LARGER, 4};
     else if (l < r) return {RIGHT_LARGER, 4};
@@ -232,24 +231,18 @@ bool b_tree_insert_record(BTree& btree, void* key, void* data) {
     int right = root->fill - 1;
     int m = (left + right) / 2;
     while(true){
-        std::cout << "m: " << m << "\n";
         int res = comp_keys(key, start + step * m, btree.key_ids);
         if(res == EQUAL){
             return false;
         } else if(res == LEFT_LARGER){
             left = m + 1;
-            std::cout << "l\n";
         } else if(res == RIGHT_LARGER){
             right = m - 1;
-            std::cout << "r\n";
         }
-        std::cout << "m: " << m << "\n";
         m = (left + right) / 2;
-        std::cout << "m: " << m << "\n";
         if(left > right) break;
     }
 
-    std::cout << "c l: " << left << "\n";
     if(left > root->fill - 1){
         if(root->fill == root->size){
             // split needed
