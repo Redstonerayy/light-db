@@ -229,7 +229,7 @@ bool b_tree_insert_record(BTree& btree, void* key, void* data) {
     int step = btree.key_size + btree.data_size + 8;
     
     int left = 0;
-    int right = root->fill;
+    int right = root->fill - 1;
     int m = (left + right) / 2;
     while(true){
         std::cout << "m: " << m << "\n";
@@ -249,14 +249,13 @@ bool b_tree_insert_record(BTree& btree, void* key, void* data) {
         if(left > right) break;
     }
 
-
-    std::cout << "c m: " << m << "\n";
-    if(m > root->fill){
+    std::cout << "c l: " << left << "\n";
+    if(left > root->fill - 1){
         if(root->fill == root->size){
             // split needed
         } else {
-            memcpy(start + step * m, key, btree.key_size);
-            memcpy(start + step * m + btree.key_size, data, btree.data_size);
+            memcpy(start + step * left, key, btree.key_size);
+            memcpy(start + step * left + btree.key_size, data, btree.data_size);
             ++root->fill;
             b_tree_write_page(btree, root, 0);
             return true;
