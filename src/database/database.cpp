@@ -37,7 +37,7 @@ std::string Database::process_connection(Connection *con) {
 std::string Database::extract_query_from_connection(Connection *con) const {
     bool double_quote = false;
     bool single_quote = false;
-    std::string query;
+    std::string query = "";
     for (int i = 0; i < con->buffered_data.size(); ++i) {
         if (con->buffered_data.at(i) == (char)34)  // "
             double_quote = single_quote ? double_quote : !double_quote;

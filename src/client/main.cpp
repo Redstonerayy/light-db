@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
     std::cin.exceptions(std::ios_base::failbit);
     while (true) {
         try {
+            std::cin.clear();
             std::getline(std::cin, query_string, '\n');
         } catch (std::ios_base::failure &e) {
             std::cout << e.what() << "\n";
@@ -30,7 +31,7 @@ int main(int argc, char *argv[]) {
         } else {
             std::cout << "Error in Query String!\n";
         }
-        std::cout << query_string << "\n";
+        // std::cout << query_string << "\n";
         std::cout << "lightdb>";
     }
 

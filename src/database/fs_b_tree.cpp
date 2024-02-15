@@ -284,7 +284,5 @@ bool b_tree_insert_record(BTree& btree, void* key, void* data) {
         }
     }
 
-    // insert key
-    // split/balance if page is full
     return false;
 }
