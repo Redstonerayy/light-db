@@ -1,21 +1,9 @@
-https://wiki.openssl.org/index.php/Simple_TLS_Server
-
-## Get the Code
+## Get it going
 
 ```sh
 git clone https://github.com/Redstonerayy/light-db
-```
-
-TODO: releases
-
-## Build
-
-```sh
 cd light-db
-make deps
 make build
+make start # for database
+python ./src/client/py/client.py # for client
 ```
-
-## Execution
-
-`make start` for server and `make client` for client.
