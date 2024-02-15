@@ -1,5 +1,8 @@
 #include "db_util.hpp"
 
+#include <string>
+#include <vector>
+
 #include "structs.hpp"
 
 int get_byte_size(TABLE_DATATYPE type) {
@@ -57,4 +60,17 @@ int compare_keys(void* key_l, void* key_r, std::vector<int>& key_attribute_lengt
         byte_offset += bytes;
     }
     return 0;
+}
+
+std::vector<std::string> split_string(std::string s, std::string delimiter) {
+    size_t pos = 0;
+    std::string token;
+    std::vector<std::string> parts;
+    while ((pos = s.find(delimiter)) != std::string::npos) {
+        token = s.substr(0, pos);
+        parts.push_back(token);
+        s.erase(0, pos + delimiter.length());
+    }
+    parts.push_back(s);
+    return parts;
 }

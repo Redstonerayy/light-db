@@ -1,10 +1,8 @@
 #pragma once
 
-#include <cstdint>
 #include <fstream>
 #include <string>
-
-#include "structs.hpp"
+#include <vector>
 
 struct Page {
     int size;

@@ -4,29 +4,28 @@
 #include <string>
 #include <vector>
 
+#include "db_util.hpp"
 #include "fs_b_tree.hpp"
 
 Database::Database(std::string db_path) {
     this->db_path = db_path;
     this->btree = BTree{};
     b_tree_open(this->btree, db_path);
-    int key = 4;
-    int data = 53;
-    b_tree_insert_record(this->btree, &key, &data);
-    key = 6;
-    data = 55;
-    b_tree_insert_record(this->btree, &key, &data);
-    key = 7;
-    data = 56;
-    b_tree_insert_record(this->btree, &key, &data);
-    key = 5;
-    data = 54;
-    b_tree_insert_record(this->btree, &key, &data);
+    // int key = 4;
+    // int data = 53;
+    // b_tree_insert_record(this->btree, &key, &data);
+    // key = 6;
+    // data = 55;
+    // b_tree_insert_record(this->btree, &key, &data);
+    // key = 7;
+    // data = 56;
+    // b_tree_insert_record(this->btree, &key, &data);
+    // key = 5;
+    // data = 54;
+    // b_tree_insert_record(this->btree, &key, &data);
 }
 
-Database::~Database(){
-    this->btree.fs.close();
-}
+Database::~Database() { this->btree.fs.close(); }
 
 std::string Database::process_connection(Connection *con) {
     std::string query = this->extract_query_from_connection(con);
@@ -54,4 +53,16 @@ std::string Database::extract_query_from_connection(Connection *con) const {
     return query;
 }
 
-std::string Database::execute_query(const std::string &query_string) { return query_string; }
+std::string Database::execute_query(const std::string &query_string) {
+    std::vector<std::string> parts = split_string(query_string, " ");
+    std::string &last = parts.at(parts.size() - 1);
+    if (last.at(last.size() - 1) == ';') {
+        last.erase(last.size() - 1);
+    }
+
+    int key = std::stoi(parts.at(0));
+    int data = std::stoi(parts.at(1));
+
+    int success = b_tree_insert_record(this->btree, &key, &data);
+    return success ? "Success" : "Failure"; 
+}
